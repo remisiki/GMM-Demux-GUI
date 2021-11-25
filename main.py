@@ -1,11 +1,15 @@
 import sys
 import os
-import gmm
-from PyQt5.QtCore import *
-from PyQt5.QtGui import *
-from PyQt5.QtWidgets import *
+# import gmm
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QFileDialog, QTextEdit, QTextBrowser
+from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtCore import Qt, QFile, QTextStream
+from PyQt5.QtGui import QPixmap
+# from PyQt5 import sip
 # import the converted file as ui
 from qt5 import Ui_MainWindow
+from breeze import breeze_resources
+# import qdarkstyle
 
 
 class MainWindow(QMainWindow):
@@ -26,8 +30,16 @@ class MainWindow(QMainWindow):
         self.ui.run.clicked.connect(self.parseCommand)
         self.ui.exit.clicked.connect(self.close)
         self.ui.actionExit.triggered.connect(self.close)
+        self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 0, 2, 2)
+        self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 2, 2, 3)
+        self.ui.gridLayout.addWidget(self.ui.frame_console, 2, 0, 2, 4)
+        self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
+        # self.ui.gridLayout.addWidget(self.ui.run, 2, 4, 1, 1)
+        # self.ui.gridLayout.addWidget(self.ui.exit, 3, 4, 1, 1)
+        print(self.ui.tabWidget.size())
         # self.ui.textBox1.setText("==GMM-Demux Initialization==\n")
         self.setFocus()
+        # self.ui.statusbar.hide()
         self.show()
 
     def open(self):
@@ -100,12 +112,22 @@ class MainWindow(QMainWindow):
         
 
         print(command)
+        # print(self.size())
         # gmm.main(command)
 
     
 
 if __name__ == "__main__":
     app = QApplication(sys.argv)
+    # app.setStyle('Windows')
+    # app.setStyleSheet(qdarkstyle.load_stylesheet())
+    # print(QtWidgets.QStyleFactory.keys())
+    file = QFile(":/dark/stylesheet.qss")
+    file.open(QFile.ReadOnly | QFile.Text)
+    stream = QTextStream(file)
+    app.setStyleSheet(stream.readAll())
+    width = app.primaryScreen().size().width()
+    # print(width)
     mainWindow = MainWindow()
     mainWindow.show()
     sys.exit(app.exec_())
