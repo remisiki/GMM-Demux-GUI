@@ -1,56 +1,104 @@
 import sys
 import os
 import gmm
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QFileDialog, QTextEdit, QTextBrowser
+import datetime
+from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QFileDialog, QTextEdit, QTextBrowser, QDialogButtonBox, QVBoxLayout, QLabel, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QFile, QTextStream
 from PyQt5.QtGui import QPixmap
-# from PyQt5 import sip
-# import the converted file as ui
 from qt5 import Ui_MainWindow
 from breeze import breeze_resources
-# import qdarkstyle
+import matplotlib.pyplot as plt
+import seaborn as sns
+import pandas as pd
+import time
+
+# class Ui_error(object):
+#     def setupUi(self, error):
+#         error.setObjectName("error")
+#         error.resize(400, 300)
+#         icon = QtGui.QIcon.fromTheme("no")
+#         error.setWindowIcon(icon)
+#         self.buttonBox = QtWidgets.QDialogButtonBox(error)
+#         self.buttonBox.setGeometry(QtCore.QRect(180, 230, 171, 32))
+#         self.buttonBox.setOrientation(QtCore.Qt.Horizontal)
+#         self.buttonBox.setStandardButtons(QtWidgets.QDialogButtonBox.Cancel|QtWidgets.QDialogButtonBox.Ok)
+#         self.buttonBox.setObjectName("buttonBox")
+
+#         self.retranslateUi(error)
+#         self.buttonBox.accepted.connect(error.accept)
+#         self.buttonBox.rejected.connect(error.reject)
+#         QtCore.QMetaObject.connectSlotsByName(error)
+
+#     def retranslateUi(self, error):
+#         _translate = QtCore.QCoreApplication.translate
+#         error.setWindowTitle(_translate("error", "Error"))
+
+class ErrorWindow(QDialog):
+    def __init__(self, parent=None):
+        # super(self).__init__(parent)
+        # self.ui = Ui_error()
+        # self.ui.setupUi(self)
+        # self.show()
+        super().__init__(parent)
+        self.setWindowTitle("Error")
+        QBtn = QDialogButtonBox.Ok# | QDialogButtonBox.Cancel
+        self.buttonBox = QDialogButtonBox(QBtn)
+        self.buttonBox.accepted.connect(self.accept)
+        # self.buttonBox.rejected.connect(self.reject)
+        self.layout = QVBoxLayout()
+        message = QLabel("Please plot your data first.")
+        self.layout.addWidget(message)
+        self.layout.addWidget(self.buttonBox)
+        self.setLayout(self.layout)
 
 
 class MainWindow(QMainWindow):
+    tmp_path = "/tmp/.gmm-demux/"
     def __init__(self, parent=None):
+        if (not os.path.exists(self.tmp_path)):
+            os.makedirs(self.tmp_path)
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
+        self.ui.console.append(datetime.datetime.now().strftime("%Y/%m/%d %H:%M:%S ") + "GMM-demux started.\n")
         self.ui.select_path.clicked.connect(self.open)
         self.ui.select_report_path.clicked.connect(self.report)
         self.ui.select_out_path.clicked.connect(self.output)
         self.ui.select_summary_path.clicked.connect(self.outputSummary)
         self.ui.select_cell_list_path.clicked.connect(self.outputCellList)
-        # self.ui.actionAdd_file_from_directory.triggered.connect(self.open)
-        # self.ui.actionAdd_file_from_csv.triggered.connect(self.ui.csv.click)
-        # self.ui.actionAdd_file_from_csv.triggered.connect(self.open)
-        self.ui.raw_data_path.currentIndexChanged.connect(self.grayhto)        
-        # self.ui.output_path.setPlaceholderText("SSD_mtx/")
+        self.ui.select_plot_path.clicked.connect(self.inputPlot)
+        self.ui.save_png.clicked.connect(self.savePlot)
+        self.ui.actionAdd_file_from_directory.triggered.connect(lambda: self.ui.raw_data_path.setCurrentIndex(0))
+        self.ui.actionAdd_file_from_directory.triggered.connect(self.open)
+        self.ui.actionAdd_file_from_csv.triggered.connect(lambda: self.ui.raw_data_path.setCurrentIndex(1))
+        self.ui.actionAdd_file_from_csv.triggered.connect(self.open)
+        self.ui.actionAdd_full_report.triggered.connect(lambda: self.ui.raw_data_path.setCurrentIndex(2))
+        self.ui.actionAdd_full_report.triggered.connect(self.open)
+        self.ui.raw_data_path.currentIndexChanged.connect(self.grayhto)
         self.ui.run.clicked.connect(self.parseCommand)
+        self.ui.plot.clicked.connect(self.plot)
         self.ui.exit.clicked.connect(self.close)
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 0, 2, 3)
         self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 3, 2, 2)
         self.ui.gridLayout.addWidget(self.ui.frame_console, 2, 0, 2, 4)
         self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
-        # self.ui.gridLayout.addWidget(self.ui.run, 2, 4, 1, 1)
-        # self.ui.gridLayout.addWidget(self.ui.exit, 3, 4, 1, 1)
-        # print(self.ui.tabWidget.size())
         self.ui.actionLight.triggered.connect(lambda: changeTheme("light"))
         self.ui.actionDark.triggered.connect(lambda: changeTheme("dark"))
-        # self.ui.textBox1.setText("==GMM-Demux Initialization==\n")
+        self.ui.statusbar.showMessage("Ready")
         self.setFocus()
-        # self.ui.statusbar.hide()
         self.show()
+        # print(self.ui.frame_plot.size())
 
     def open(self):
-        if ((self.ui.raw_data_path.currentText() == "mtx file directory")
-            | (self.ui.raw_data_path.currentText() == "full report directory")):
+        file_type = self.ui.raw_data_path.currentText()
+        if ((file_type == "mtx file directory")
+            | (file_type == "full report directory")):
             directory_path = QFileDialog.getExistingDirectory(self, "Open a directory")
             if (directory_path != ('')):
                 self.ui.path.setPlainText(directory_path)
-        elif (self.ui.raw_data_path.currentText() == "csv file"):
+        elif (file_type == "csv file"):
             csv_path = QFileDialog.getOpenFileName(self, "Open a csv file", "", "*.csv")
             if (csv_path != ('','')):
                 self.ui.path.setPlainText(csv_path[0])
@@ -84,6 +132,7 @@ class MainWindow(QMainWindow):
             self.ui.cell_list_path.setPlainText(cell_list_path[0])
 
     def parseCommand(self):
+        start_time = time.time()
         command = "GMM-demux"
         if (self.ui.raw_data_path.currentText() == "full report directory"):
             command = command + " -k " + self.ui.path.toPlainText()
@@ -113,11 +162,64 @@ class MainWindow(QMainWindow):
             command = command + " -a " + self.ui.phony_chance.toPlainText()
         
 
-        sys.stdout.write(command)
+        # sys.stdout.write(command)
         # print(self.size())
         string = gmm.main(command)
         # print(string)
         self.ui.console.append(string)
+        self.ui.console.append("Finished in {0: .2f}s.\n".format(time.time() - start_time))
+
+    def plot(self):
+        df = pd.read_csv(self.ui.plot_path.toPlainText())
+        if (self.ui.plot_type.currentText() == "scatter"):
+            x = df.iloc[:, 0].values
+            y = df.iloc[:, 1].values
+            plt.scatter(x, y)
+            print("sct")
+        elif (self.ui.plot_type.currentText() == "distribution"):
+            sns.displot(df)
+            print("dist")
+        plt.savefig(self.tmp_path + "plot.png")
+        pixmap = QPixmap(self.tmp_path + "plot.png")
+        pixmap = pixmap.scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+        self.ui.label_plot.setPixmap(pixmap)
+
+    def inputPlot(self):
+        csv_path = QFileDialog.getOpenFileName(self, "Open a csv file", "", "*.csv")
+        if (csv_path != ('','')):
+            self.ui.plot_path.setPlainText(csv_path[0])
+
+    def resizeEvent(self, event):
+        self.plotResize()
+        # print(self.ui.label_plot.size())
+        return super(QMainWindow, self).resizeEvent(event)
+
+    def closeEvent(self, event):
+        if (os.path.exists(self.tmp_path + "plot.png")):
+            os.remove(self.tmp_path + "plot.png")
+        event.accept() # let the window close
+
+    def plotResize(self):
+        if (os.path.exists(self.tmp_path + "plot.png")):
+            pixmap = QPixmap(self.tmp_path + "plot.png")
+            pixmap = pixmap.scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+            self.ui.label_plot.setPixmap(pixmap)
+
+    def savePlot(self):
+        if (not os.path.exists(self.tmp_path + "plot.png")):
+            # dlg = ErrorWindow(self)
+            # if (dlg.exec()):
+            #     print("ss")
+            dlg = QMessageBox(self)
+            dlg.setWindowTitle("Error")
+            dlg.setText("Please plot your data first")
+            dlg.exec()
+            return
+        path = QFileDialog.getSaveFileName(self, "Save file", "", "*.png")
+        if (path != ('','')):
+
+            os.system("cp " + self.tmp_path + "plot.png " + path[0])
+            self.ui.console.append("Saved plot image as " + path[0] + '\n')
 
 def changeTheme(theme_type):
     file = QFile(":/" + theme_type + "/stylesheet.qss")
