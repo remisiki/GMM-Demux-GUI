@@ -37,7 +37,7 @@ def main(command):
     parser.add_argument("-a", "--ambiguous", help="The estimated chance of having a phony GEM getting included in a pure type GEM cluster by the clustering algorithm. Requires a float in (0, 1). Default value: 0.05. Only executes if -e executes.", type=float, default=0.05)
     
     string = ""
-    string += ("========================GMM-Demux Initialization========================\n")
+    string += ("=====================GMM-Demux Initialization=====================\n")
     args = parser.parse_args(command.split())
     # print(args)
     confidence_threshold = args.threshold
@@ -200,11 +200,11 @@ def main(command):
 
         full_report_df = pd.DataFrame(full_report_dict, index = ["Total"], columns=full_report_columns)
 
-        string += "========================Full Report========================\n"
+        string += "=====================Full Report=====================\n"
         string += tabulate(full_report_df, headers='keys', tablefmt='psql')
         string += '\n\n'
         # print ("\n\n")
-        string += ("========================Per Sample Report========================\n")
+        string += ("=====================Per Sample Report=====================\n")
         sample_df = pd.DataFrame(data=[
             ["%d" % num for num in rounded_cell_num_ary],
             ["%d" % num for num in SSD_count_ary],
@@ -229,7 +229,7 @@ def main(command):
 
         # Verify cell type 
         if args.examine:
-            string += ("\n\n========================Verifying the GEM Cluster========================\n")
+            string += ("\n\n=====================Verifying the GEM Cluster=====================\n")
 
             ambiguous_rate = args.ambiguous
             string = string + "Ambiguous rate:" + str(ambiguous_rate) + '\n'
