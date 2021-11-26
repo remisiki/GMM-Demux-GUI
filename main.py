@@ -75,6 +75,8 @@ class MainWindow(QMainWindow):
         self.ui.actionAdd_file_from_csv.triggered.connect(self.open)
         self.ui.actionAdd_full_report.triggered.connect(lambda: self.ui.raw_data_path.setCurrentIndex(2))
         self.ui.actionAdd_full_report.triggered.connect(self.open)
+        self.ui.actionRun.triggered.connect(self.parseCommand)
+        self.ui.actionPlot.triggered.connect(self.plot)
         self.ui.raw_data_path.currentIndexChanged.connect(self.grayhto)
         self.ui.run.clicked.connect(self.parseCommand)
         self.ui.plot.clicked.connect(self.plot)

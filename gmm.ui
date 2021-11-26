@@ -897,7 +897,15 @@
     </widget>
     <addaction name="menuTheme"/>
    </widget>
+   <widget class="QMenu" name="menuRun">
+    <property name="title">
+     <string>Run</string>
+    </property>
+    <addaction name="actionRun"/>
+    <addaction name="actionPlot"/>
+   </widget>
    <addaction name="menuHello_world"/>
+   <addaction name="menuRun"/>
    <addaction name="menuSettings"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
@@ -932,6 +940,19 @@
   <action name="actionAdd_full_report">
    <property name="text">
     <string>Add full report</string>
+   </property>
+  </action>
+  <action name="actionRun">
+   <property name="text">
+    <string>Run</string>
+   </property>
+   <property name="shortcut">
+    <string>F5</string>
+   </property>
+  </action>
+  <action name="actionPlot">
+   <property name="text">
+    <string>Plot</string>
    </property>
   </action>
  </widget>
