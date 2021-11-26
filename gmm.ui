@@ -633,6 +633,21 @@
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QTextBrowser" name="console">
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
+         </property>
+         <property name="documentTitle">
+          <string/>
+         </property>
+         <property name="lineWrapMode">
+          <enum>QTextEdit::WidgetWidth</enum>
+         </property>
+        </widget>
+       </item>
+      </layout>
      </widget>
     </item>
     <item row="1" column="2">

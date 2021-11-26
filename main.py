@@ -113,10 +113,11 @@ class MainWindow(QMainWindow):
             command = command + " -a " + self.ui.phony_chance.toPlainText()
         
 
-        # print(command)
+        sys.stdout.write(command)
         # print(self.size())
         string = gmm.main(command)
-        print(string)
+        # print(string)
+        self.ui.console.append(string)
 
 def changeTheme(theme_type):
     file = QFile(":/" + theme_type + "/stylesheet.qss")

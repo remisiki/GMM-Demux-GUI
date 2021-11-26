@@ -79,7 +79,7 @@ def classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, in
 
 
 def read_full_classify_result(path):
-    print(path)
+    # print(path)
     classify_file_name = os.path.join(path, "GMM_full.csv")
     config_file_name = os.path.join(path, "GMM_full.config")
 

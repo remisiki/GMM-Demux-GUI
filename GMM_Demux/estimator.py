@@ -157,8 +157,8 @@ def test_phony_hypothesis(cluster_MSM_num, cluster_GEM_num, cell_num_ary, captur
 
 def test_pure_hypothesis(cluster_MSM_num, drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate = 0):
     MSM_rate = pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate)
-    print("Estimated MSM rate: ", MSM_rate)
-    return binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")
+    # print("Estimated MSM rate: ", MSM_rate)
+    return MSM_rate, binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")
 
 
 ####Debuging Functions####

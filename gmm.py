@@ -36,12 +36,12 @@ def main(command):
     parser.add_argument("-e", "--examine", help="Provide the cell list. Requires a file argument. Only executes if -u is set.", type=str)
     parser.add_argument("-a", "--ambiguous", help="The estimated chance of having a phony GEM getting included in a pure type GEM cluster by the clustering algorithm. Requires a float in (0, 1). Default value: 0.05. Only executes if -e executes.", type=float, default=0.05)
     
-    print("==============================GMM-Demux Initialization==============================")
+    string = ""
+    string += ("========================GMM-Demux Initialization========================\n")
     args = parser.parse_args(command.split())
-    print(args)
-
+    # print(args)
     confidence_threshold = args.threshold
-    print("Confidence threshold:", confidence_threshold)
+    string = string + "Confidence threshold: " + str(confidence_threshold) + '\n'
 
 
     # Classify droplets
@@ -55,7 +55,7 @@ def main(command):
         hto_array = args.hto_array.split(',')
 
         output_path = args.output
-        print("Output directory:", output_path)
+        string = string + "Output directory: " + output_path + '\n'
 
         #TODO: add CLR to csv data.
         if args.csv:
@@ -102,21 +102,21 @@ def main(command):
 
         # Store classification results
         if args.full:
-            print("Full classification result is stored in", args.full)
+            string =  string + "Full classification result is stored in " + args.full + '\n'
             classify_drops.store_full_classify_result(GMM_full_df, class_name_ary, args.full)
 
         if args.simplified:
             ########## Paper Specific ############
             #purified_df = classify_drops.purify_droplets(GMM_full_df, confidence_threshold)
             ########## Paper Specific ############
-            print("Simplified classification result is stored in", args.simplified)
+            string =  string + "Simplified classification result is stored in " + args.simplified + '\n'
             classify_drops.store_simplified_classify_result(GMM_full_df, class_name_ary, args.simplified, sample_num, confidence_threshold)
         
         # Clean up bad drops
         purified_df = classify_drops.purify_droplets(GMM_full_df, confidence_threshold)
 
         # Store SSD result
-        print("MSM-free droplets are stored in folder", output_path, "\n")
+        string =  string + "MSM-free droplets are stored in folder " + output_path + '\n'
         
         SSD_idx = classify_drops.obtain_SSD_list(purified_df, sample_num, extract_id_ary)
         SSD_df = GMM_IO.store_cellranger(full_df, SSD_idx, output_path)
@@ -126,6 +126,7 @@ def main(command):
 
     # Parse the full report.
     else:
+        string = string + "Reading full report from " + args.skip + '\n'
         GMM_full_df, sample_num, class_name_ary, sampe_names = classify_drops.read_full_classify_result(args.skip)
         base_bv_array = compute_venn.obtain_base_bv_array(sample_num)
         purified_df = classify_drops.purify_droplets(GMM_full_df, confidence_threshold)
@@ -134,7 +135,7 @@ def main(command):
 
     ####### If extract is eanbled, other functions are disabled #######
     if args.extract:
-        exit()
+        return
 
 
     ####### Estimate SSM #######
@@ -159,8 +160,8 @@ def main(command):
                 HTO_GEM_ary_main = HTO_GEM_ary[0:combination_counter]
                 params0 = compute_venn.obtain_experiment_params(base_bv_array, HTO_GEM_ary_main, sample_num, estimated_total_cell_num, params0)
         except:
-            print("GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated.")
-            sys.exit(0)
+            string += "GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated.\n"
+            return
                 
 
         # Legacy parameter estimation
@@ -199,20 +200,22 @@ def main(command):
 
         full_report_df = pd.DataFrame(full_report_dict, index = ["Total"], columns=full_report_columns)
 
-        print("==============================Full Report==============================")
-        print(tabulate(full_report_df, headers='keys', tablefmt='psql'))
-        print ("\n\n")
-        print("==============================Per Sample Report==============================")
+        string += "========================Full Report========================\n"
+        string += tabulate(full_report_df, headers='keys', tablefmt='psql')
+        string += '\n\n'
+        # print ("\n\n")
+        string += ("========================Per Sample Report========================\n")
         sample_df = pd.DataFrame(data=[
             ["%d" % num for num in rounded_cell_num_ary],
             ["%d" % num for num in SSD_count_ary],
             ["%5.2f" % (num * 100) for num in SSM_rate_ary]
             ],
             columns = sampe_names, index = ["#Cells", "#SSDs", "RSSM"])
-        print(tabulate(sample_df, headers='keys', tablefmt='psql'))
+        string += (tabulate(sample_df, headers='keys', tablefmt='psql'))
+        # string += '\n'
 
         if args.report:
-            print("\n\n***Summary report is stored in folder", args.report)
+            string = string + "\n\n***Summary report is stored in folder " + args.report + '\n'
             with open(args.report, "w") as report_file:
                 report_file.write("==============================Full Report==============================\n")
             with open(args.report, "a") as report_file:
@@ -226,10 +229,10 @@ def main(command):
 
         # Verify cell type 
         if args.examine:
-            print("\n\n==============================Verifying the GEM Cluster==============================")
+            string += ("\n\n========================Verifying the GEM Cluster========================\n")
 
             ambiguous_rate = args.ambiguous
-            print("Ambiguous rate:", ambiguous_rate)
+            string = string + "Ambiguous rate:" + str(ambiguous_rate) + '\n'
 
             simplified_df = classify_drops.store_simplified_classify_result(purified_df, class_name_ary, None, sample_num, confidence_threshold)
 
@@ -246,13 +249,14 @@ def main(command):
 
             GEM_num = len(cell_list)
             MSM_num = len(MSM_list)
-            print("GEM count: ", GEM_num, " | MSM count: ", MSM_num)
+            string = string + "GEM count: " + str(GEM_num) + " | MSM count: " + str(MSM_num) + '\n'
 
             phony_test_pvalue = estimator.test_phony_hypothesis(MSM_num, GEM_num, rounded_cell_num_ary, capture_rate)
-            pure_test_pvalue = estimator.test_pure_hypothesis(MSM_num, drop_num, GEM_num, rounded_cell_num_ary, capture_rate, ambiguous_rate)
+            MSM_rate_estimated, pure_test_pvalue = estimator.test_pure_hypothesis(MSM_num, drop_num, GEM_num, rounded_cell_num_ary, capture_rate, ambiguous_rate)
 
-            print("Phony-type testing. P-value: ", phony_test_pvalue)
-            print("Pure-type testing. P-value: ", pure_test_pvalue)
+            string = string + "Estimated MSM rate: ", str(MSM_rate_estimated) + '\n'
+            string = string + "Phony-type testing. P-value: " + str(phony_test_pvalue) + '\n'
+            string = string + "Pure-type testing. P-value: " + str(pure_test_pvalue) + '\n'
             
             cluster_type = ""
 
@@ -263,14 +267,14 @@ def main(command):
             else:
                 cluster_type = "n unclear"
 
-            print("Conclusion: The cluster is a" + cluster_type + " cluster.")
+            string = string + "Conclusion: The cluster is a" + cluster_type + " cluster.\n"
 
             ########## Paper Specific ############
             #estimated_phony_cluster_MSM_rate = estimator.phony_cluster_MSM_rate(rounded_cell_num_ary, cell_type_num = 2)
             #estimated_pure_cluster_MSM_rate = estimator.pure_cluster_MSM_rate(drop_num, GEM_num, rounded_cell_num_ary, capture_rate, ambiguous_rate)
             #print(str(estimated_phony_cluster_MSM_rate)+","+str(estimated_pure_cluster_MSM_rate)+","+str(MSM_num / float(GEM_num))+","+str(phony_test_pvalue)+","+str(pure_test_pvalue)+","+str(GEM_num / float(purified_df.shape[0]))+","+str(cluster_type), file=sys.stderr)
             ########## Paper Specific ############
-
+    return string
 
 if __name__ == "__main__":
     main()
