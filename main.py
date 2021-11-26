@@ -175,10 +175,12 @@ class MainWindow(QMainWindow):
             x = df.iloc[:, 0].values
             y = df.iloc[:, 1].values
             plt.scatter(x, y)
-            print("sct")
+            # print("sct")
+            self.ui.console.append("Scatter plot generated.\n")
         elif (self.ui.plot_type.currentText() == "distribution"):
             sns.displot(df)
-            print("dist")
+            # print("dist")
+            self.ui.console.append("Distribution plot generated.\n")
         plt.savefig(self.tmp_path + "plot.png")
         pixmap = QPixmap(self.tmp_path + "plot.png")
         pixmap = pixmap.scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
@@ -233,7 +235,7 @@ def main():
     # app.setStyle('Windows')
     # app.setStyleSheet(qdarkstyle.load_stylesheet())
     # print(QtWidgets.QStyleFactory.keys())
-    file = QFile("./breeze/dist/light/stylesheet.qss")
+    file = QFile("./breeze/dist/dark/stylesheet.qss")
     file.open(QFile.ReadOnly | QFile.Text)
     stream = QTextStream(file)
     app.setStyleSheet(stream.readAll())
