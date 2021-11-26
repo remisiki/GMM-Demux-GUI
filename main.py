@@ -82,7 +82,7 @@ class MainWindow(QMainWindow):
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 0, 2, 3)
         self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 3, 2, 2)
-        self.ui.gridLayout.addWidget(self.ui.frame_console, 2, 0, 2, 4)
+        self.ui.gridLayout.addWidget(self.ui.tabWidget_console, 2, 0, 2, 4)
         self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
         self.ui.actionLight.triggered.connect(lambda: changeTheme("light"))
         self.ui.actionDark.triggered.connect(lambda: changeTheme("dark"))
@@ -222,7 +222,7 @@ class MainWindow(QMainWindow):
             self.ui.console.append("Saved plot image as " + path[0] + '\n')
 
 def changeTheme(theme_type):
-    file = QFile(":/" + theme_type + "/stylesheet.qss")
+    file = QFile("./breeze/dist/" + theme_type + "/stylesheet.qss")
     file.open(QFile.ReadOnly | QFile.Text)
     stream = QTextStream(file)
     QApplication.instance().setStyleSheet(stream.readAll())
@@ -233,7 +233,7 @@ def main():
     # app.setStyle('Windows')
     # app.setStyleSheet(qdarkstyle.load_stylesheet())
     # print(QtWidgets.QStyleFactory.keys())
-    file = QFile(":/dark/stylesheet.qss")
+    file = QFile("./breeze/dist/light/stylesheet.qss")
     file.open(QFile.ReadOnly | QFile.Text)
     stream = QTextStream(file)
     app.setStyleSheet(stream.readAll())
