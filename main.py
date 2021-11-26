@@ -1,6 +1,6 @@
 import sys
 import os
-# import gmm
+import gmm
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QFileDialog, QTextEdit, QTextBrowser
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt, QFile, QTextStream
@@ -30,13 +30,15 @@ class MainWindow(QMainWindow):
         self.ui.run.clicked.connect(self.parseCommand)
         self.ui.exit.clicked.connect(self.close)
         self.ui.actionExit.triggered.connect(self.close)
-        self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 0, 2, 2)
-        self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 2, 2, 3)
+        self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 0, 2, 3)
+        self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 3, 2, 2)
         self.ui.gridLayout.addWidget(self.ui.frame_console, 2, 0, 2, 4)
         self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
         # self.ui.gridLayout.addWidget(self.ui.run, 2, 4, 1, 1)
         # self.ui.gridLayout.addWidget(self.ui.exit, 3, 4, 1, 1)
-        print(self.ui.tabWidget.size())
+        # print(self.ui.tabWidget.size())
+        self.ui.actionLight.triggered.connect(lambda: changeTheme("light"))
+        self.ui.actionDark.triggered.connect(lambda: changeTheme("dark"))
         # self.ui.textBox1.setText("==GMM-Demux Initialization==\n")
         self.setFocus()
         # self.ui.statusbar.hide()
@@ -111,13 +113,19 @@ class MainWindow(QMainWindow):
             command = command + " -a " + self.ui.phony_chance.toPlainText()
         
 
-        print(command)
+        # print(command)
         # print(self.size())
-        # gmm.main(command)
+        string = gmm.main(command)
+        print(string)
 
-    
+def changeTheme(theme_type):
+    file = QFile(":/" + theme_type + "/stylesheet.qss")
+    file.open(QFile.ReadOnly | QFile.Text)
+    stream = QTextStream(file)
+    QApplication.instance().setStyleSheet(stream.readAll())
 
-if __name__ == "__main__":
+
+def main():
     app = QApplication(sys.argv)
     # app.setStyle('Windows')
     # app.setStyleSheet(qdarkstyle.load_stylesheet())
@@ -131,3 +139,6 @@ if __name__ == "__main__":
     mainWindow = MainWindow()
     mainWindow.show()
     sys.exit(app.exec_())
+
+if __name__ == "__main__":
+    main()
