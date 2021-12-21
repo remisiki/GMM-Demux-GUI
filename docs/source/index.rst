@@ -10,8 +10,6 @@ Welcome to GMM-Demux's documentation!
    README.md
    
 
-
-
 .. Indices and tables
 .. ==================
 
