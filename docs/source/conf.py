@@ -20,7 +20,7 @@
 project = 'GMM-Demux'
 copyright = '2021, Hongyi Xin <email@email>'
 author = 'Hongyi Xin'
-# html_show_sphinx = False
+html_show_sphinx = False
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
