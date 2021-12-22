@@ -18,7 +18,7 @@
 # -- Project information -----------------------------------------------------
 
 project = 'GMM-Demux'
-copyright = '2021, Hongyi Xin <email@email>'
+copyright = '2021, Hongyi Xin'
 author = 'Hongyi Xin'
 html_show_sphinx = False
 
@@ -31,7 +31,9 @@ release = '0.1'
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['myst_parser'
+extensions = [
+'myst_parser',
+'sphinx.ext.intersphinx'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
