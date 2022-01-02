@@ -51,7 +51,8 @@ The pip binary folder might locate at a different location if the user uses virt
 
 Here is an example installation output. The path of the pip binary folder is highlighted:
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/path.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/path.png
+	:figwidth: 60%
 
 To temporarily add the pip binary folder, run the following command:
 

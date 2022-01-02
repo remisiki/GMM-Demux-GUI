@@ -2,7 +2,8 @@ Introduction
 ============
 GMM-Demux identifies Multi-Sample Multiplets (MSMs) in a sample barcoding dataset. Below shows an example distribution of MSMs in a PBMC scRNA-seq dataset. Orange dots in the scatter plot are MSMs.
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/GMM_simplified.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/GMM_simplified.png
+	:figwidth: 50%
 
 Description
 -----------
@@ -13,7 +14,8 @@ Multiplet-induced fake cell types are called "phony cell types".
 
 Examples of phony cell types in a PBMC CITE-seq dataset is provided in the figure below:
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/phony.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/phony.png
+	:figwidth: 60%
 
 In the above figure, both the CD3+CD19+ and the CD4+CD8+ cell types are multiplet-induced fake cell types.
 
@@ -39,7 +41,8 @@ Terminology
 
 An illustration of the above terminologies in a PBMC dataset is provided in the figure below:
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/term.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/term.png
+	:figwidth: 60%
 
 Features
 --------

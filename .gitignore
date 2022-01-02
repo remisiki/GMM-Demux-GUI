@@ -1,0 +1,8 @@
+SSD_mtx/
+# .gitignore
+.venv/
+docs/build/
+docs/make.bat
+docs/Makefile
+*cache*
+archieve/

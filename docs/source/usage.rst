@@ -41,7 +41,8 @@ An example cell hashing data is provided in the ``example_input`` folder. ``<HTO
 
 ``<HTO_names>`` are included in the ``features.tsv`` file. The content of the ``feature.tsv`` file is shown below.
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/features.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/features.png
+	:figwidth: 40%
 
 Output
 ^^^^^^
@@ -183,5 +184,6 @@ Online Cell Hashing Experiment Planner
 
 A GMM-Demux based online cell hashing experiment planner is publically accessible at `here <https://www.pitt.edu/~wec47/gmmdemux.html>`_.
 
-.. image:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/planner.png
+.. figure:: https://raw.githubusercontent.com/CHPGenetics/GMM-Demux/master/planner.png
+	:figwidth: 60%
 	:target: https://www.pitt.edu/~wec47/gmmdemux.html

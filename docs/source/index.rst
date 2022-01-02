@@ -1,13 +1,19 @@
 .. include:: home.rst
 
 .. toctree::
+   :hidden:
+
+   self
+   
+.. toctree::
    :maxdepth: 1
    
 
-   description
    install
    usage
    about
+
+.. include:: description.rst
    
    
 
