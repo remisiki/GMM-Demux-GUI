@@ -10,9 +10,9 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 #
-# import os
-# import sys
-# sys.path.insert(0, os.path.abspath('.'))
+import os
+import sys
+sys.path.append(os.path.abspath('../sphinx_rtd_dark_mode'))
 
 
 # -- Project information -----------------------------------------------------
@@ -20,7 +20,6 @@
 project = 'GMM-Demux'
 copyright = '2021, Hongyi Xin'
 author = 'Hongyi Xin'
-html_show_sphinx = False
 
 # The full version, including alpha/beta/rc tags
 release = '0.1'
@@ -33,8 +32,8 @@ release = '0.1'
 # ones.
 extensions = [
 	'myst_parser',
-	'sphinx.ext.intersphinx'
-	# "sphinx_rtd_dark_mode"
+	'sphinx.ext.intersphinx',
+	'sphinx_rtd_dark_mode'
 ]
 
 # Add any paths that contain templates here, relative to this directory.
@@ -55,6 +54,8 @@ html_theme = 'sphinx_rtd_theme'
 html_theme_options = {
     'navigation_depth': 4,
 }
+html_show_sphinx = False
+html_show_sourcelink = False
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
