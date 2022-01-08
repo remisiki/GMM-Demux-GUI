@@ -1,2 +1,6 @@
 myst-parser
 sphinx-rtd-theme
+pandas
+numpy
+scipy
+BitVector
