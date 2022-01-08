@@ -1,5 +1,3 @@
-myst-parser
-sphinx-rtd-theme
 BitVector==3.5.0
 brotli==1.0.9
 cdecimal==2.3
