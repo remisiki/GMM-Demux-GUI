@@ -7,11 +7,20 @@ from sklearn.mixture import GaussianMixture
 import os
 from math import log2
 
-from GMM_Demux import check_multi_comp
-from GMM_Demux import compute_venn
+from gmmd import multi
+from gmmd import compute
 
 
 def obtain_arrays(data):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     gmm = []
     high_array = []
     low_array = []
@@ -40,7 +49,15 @@ def obtain_arrays(data):
 
 
 def classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, index, column):
+    """Obtain high and low array from data.
 
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     classified_ary = np.full(GEM_num, 0)
     confidence_ary = np.full(GEM_num, 0.0)
 
@@ -57,7 +74,7 @@ def classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, in
         name = ""
 
         for j in range(sample_num):
-            if compute_venn.check_set_bit(bv, j, sample_num):
+            if compute.check_set_bit(bv, j, sample_num):
                 high_idx_ary.append(j)
                 name += (column[j] + "-")
         
@@ -65,7 +82,7 @@ def classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, in
             name = name[:-1]
             class_name_array.append(name)
 
-        tmp_confidence_ary = check_multi_comp.compute_confidence(high_array, low_array, high_idx_ary, all_idx_ary)
+        tmp_confidence_ary = multi.compute_confidence(high_array, low_array, high_idx_ary, all_idx_ary)
         update_idx = (tmp_confidence_ary > confidence_ary).nonzero()[0]
         confidence_ary[update_idx] = tmp_confidence_ary[update_idx]
         classified_ary[update_idx] = i
@@ -79,6 +96,15 @@ def classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, in
 
 
 def read_full_classify_result(path):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     # print(path)
     classify_file_name = os.path.join(path, "GMM_full.csv")
     config_file_name = os.path.join(path, "GMM_full.config")
@@ -93,7 +119,15 @@ def read_full_classify_result(path):
 
 # Store full classification result
 def store_full_classify_result(data_df, class_name_array, path):
+    """Obtain high and low array from data.
 
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     if not os.path.exists(path):
         os.makedirs(path)
 
@@ -109,7 +143,15 @@ def store_full_classify_result(data_df, class_name_array, path):
 
 # Store simplified classification result
 def store_simplified_classify_result(data_df, class_name_array, path, sample_num, confidence_threshold):
+    """Obtain high and low array from data.
 
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     simplified_df = data_df.copy()
     #print(simplified_df)
     MSM_idx = data_df.index[(data_df["Cluster_id"] > sample_num).to_numpy().nonzero()[0]]
@@ -141,18 +183,45 @@ def store_simplified_classify_result(data_df, class_name_array, path, sample_num
 
 
 def purify_droplets(data_df, confidence_threshold):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     drop_idx = data_df.index[((data_df["Confidence"] < confidence_threshold) | (data_df["Cluster_id"] == 0)).to_numpy().nonzero()[0]]
     purified_df = data_df.drop(drop_idx)
     return purified_df
 
 
 def count_bad_droplets(data_df, confidence_threshold):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     negative_num = (data_df["Cluster_id"] == 0).sum()
     unclear_num = (data_df["Confidence"] < confidence_threshold).sum()
     return negative_num, unclear_num
 
 
 def obtain_SSD_list(data_df, sample_num, class_id_ary = None):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     if class_id_ary is not None:
         SSD_idx = []
         for class_id in class_id_ary:
@@ -164,6 +233,15 @@ def obtain_SSD_list(data_df, sample_num, class_id_ary = None):
 
 
 def obtain_MSM_list(data_df, sample_num, idx_list = None):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     if idx_list == None:
         MSM_idx = data_df.index[data_df["Cluster_id"] == sample_num + 1]
     else:
@@ -174,6 +252,15 @@ def obtain_MSM_list(data_df, sample_num, idx_list = None):
 
 
 def count_by_class(data_df, base_bv_array):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     count_ary = []
     for i in range(1, len(base_bv_array) + 1):
         count_ary.append((data_df["Cluster_id"] == i).sum())
@@ -182,6 +269,15 @@ def count_by_class(data_df, base_bv_array):
 
 
 def get_SSD_count_ary(data_df, SSD_idx, sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     SSD_df = data_df.loc[SSD_idx,:]
     SSD_count_ary = []
 

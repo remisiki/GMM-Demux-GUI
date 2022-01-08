@@ -6,3 +6,5 @@ docs/make.bat
 docs/Makefile
 *cache*
 archieve/
+*test*
+*generated*

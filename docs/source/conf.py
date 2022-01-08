@@ -13,6 +13,7 @@
 import os
 import sys
 sys.path.append(os.path.abspath('../sphinx_rtd_dark_mode'))
+sys.path.append(os.path.abspath('../../'))
 
 
 # -- Project information -----------------------------------------------------
@@ -33,6 +34,7 @@ release = '0.1'
 extensions = [
 	'myst_parser',
 	'sphinx.ext.intersphinx',
+	'sphinx.ext.autosummary',
 	'sphinx_rtd_dark_mode'
 ]
 
@@ -56,6 +58,7 @@ html_theme_options = {
 }
 html_show_sphinx = False
 html_show_sourcelink = False
+pygments_style = "sphinx"
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,

@@ -9,6 +9,37 @@ An example set of hand-curated putative cell types of the above dataset are prov
 
 An example csv format of the above cell hashing dataset is provided as the ``example_hto.csv`` file.
 
+Command Line Tools
+------------------
+
+.. function:: GMM-demux [-h] [-k SKIP] [-x EXTRACT] [-o OUTPUT] [-f FULL] [-c] [-t THRESHOLD] [-s SIMPLIFIED] [-u SUMMARY] [-r REPORT] [-e EXAMINE] [-a AMBIGUOUS] [input_path ...] [hto_array ...]
+
+	:arg str input_path: The input path of mtx files from cellRanger pipeline.
+	:arg str hto_array: Names of the HTO tags, separated by ``,``.
+	:arg -h: Show help information.
+	:type -h: optional
+	:arg -k: Load a full classification report and skip the mtx folder. Requires a path argument to the full report folder. When specified, the user no longer needs to provide the mtx folder.
+	:type -k: str, optional
+	:arg -x: Names of the HTO tag(s) to extract, separated by ``,``. Joint HTO samples are combined with ``+``, such as ``HTO_1+HTO_2``.
+	:type -x: str, optional
+	:arg -o: The path for storing the Same-Sample-Droplets (SSDs). SSDs are stored in mtx format. Requires a path argument.
+	:type -o: str, optional
+	:arg -f: Generate the full classification report. Requires a path argument. Defaults to ``SSD_mtx``.
+	:type -f: str, optional
+	:arg -c: Take input in csv format, instead of mmx format.
+	:arg -t: Provide the confidence threshold value. Requires a float in (0,1). Defaults to ``0.8``.
+	:type -t: float, optional
+	:arg -s: Generate the simplified classification report. Requires a path argument.
+	:type -s: str, optional
+	:arg -u: Generate the statstic summary of the dataset. Including MSM, SSM rates. Requires an estimated total number of cells in the assay as input.
+	:type -u: int, optional
+	:arg -r: Store the data summary report. Requires a file argument. Only executes if ``-u`` is set.
+	:type -r: str, optional
+	:arg -e: Provide the cell list. Requires a file argument. Only executes if ``-u`` is set.
+	:type -e: str, optional
+	:arg -a: The estimated chance of having a phony GEM getting included in a pure type GEM cluster by the clustering algorithm. Requires a float in (0, 1). Only executes if ``-e`` executes. Defaults to ``0.05``.
+	:type -a: float, optional
+
 Examples
 --------
 
@@ -154,19 +185,6 @@ Example Command
 .. code-block:: bash
 
 	GMM-demux example_input/outs/filtered_feature_bc_matrix HTO_1,HTO_2,HTO_3,HTO_4 -x HTO3,HTO_1+HTO_2,HTO_1+HTO_4+HTO_2
-
-Optional Arguments
-------------------
-
-* ``-h`` show help information.
-* ``-f FULL, --full FULL`` Generate the full classification report. Require a path argument.
-* ``-s SIMPLIFIED, --simplified SIMPLIFIED`` Generate the simplified classification report. Require a path argument.
-* ``-o OUTPUT, --output OUTPUT`` The path for storing the Same-Sample-Droplets (SSDs). SSDs are stored in mtx format. Requires a path argument. Default path: SSD_mtx.
-* ``-r REPORT, --report REPORT`` Specify the file to store summary report. Require a file argument.
-* ``-c CSV, --csv``  Take input in csv format, instead of mmx format.
-* ``-s SKIP, --skip FULL_REPORT`` Load a full classification report and skip the mtx folder as input. Require a path argument.
-* ``-a AMBIGUOUS, --ambiguous AMBIGUOUS`` The estimated chance of having a phony GEM getting included in a pure type GEM cluster by the clustering algorithm. Requires a float in (0, 1). Default value: 0.05. Only executes if -e executes.
-* ``-t THRESHOLD, --threshold THRESHOLD`` Provide the confidence threshold value. Requires a float in (0,1). Default value: 0.8.
 
 Parsing the Classification Output
 ---------------------------------

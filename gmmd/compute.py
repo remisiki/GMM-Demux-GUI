@@ -1,5 +1,4 @@
-from GMM_Demux import estimator
-from GMM_Demux import classify_drops
+from gmmd import estimator
 import BitVector
 import numpy as np
 
@@ -13,6 +12,15 @@ from scipy.optimize import LinearConstraint
 
 # Returns the binary array representing all combinations of cells
 def obtain_base_bv_array(sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     base_bv_array = []
     bv_array_segments = [0]
 
@@ -34,11 +42,29 @@ def obtain_base_bv_array(sample_num):
 
 
 def get_empty_bv(sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     return BitVector.BitVector(size = sample_num)
 
 
 # Return true if the bit_pos th bit of bv is 1
 def check_set_bit(bv, bit_pos, sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     mask = BitVector.BitVector(size = sample_num)
     mask[bit_pos] = 1
     
@@ -46,16 +72,43 @@ def check_set_bit(bv, bit_pos, sample_num):
 
 
 def init_mask(sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     mask = BitVector.BitVector(size = sample_num)
     return mask
 
 
 def set_bit(bv, bit_pos):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     bv[bit_pos] = 1
     return bv
 
 
 def gather_multiplet_rates(venn_values, SSM_rate_ary, sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     total_drops = 0
     total_singlets = 0
     total_MSMs = 0
@@ -82,6 +135,15 @@ def gather_multiplet_rates(venn_values, SSM_rate_ary, sample_num):
 
 
 def obtain_HTO_GEM_num(data_df, base_bv_array, sample_num):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     HTO_GEM_ary = []
 
     # Obtain hto numbers
@@ -100,6 +162,15 @@ def obtain_HTO_GEM_num(data_df, base_bv_array, sample_num):
 
 
 def experiment_params_wrapper(params, HTO_GEM_ary, sample_num, scaler, base_bv_array, operator):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     #print("***Params: ", params)
     scaled_params = params.copy()
 
@@ -114,6 +185,15 @@ def experiment_params_wrapper(params, HTO_GEM_ary, sample_num, scaler, base_bv_a
 
 
 def param_scaling(params, scaler, operator):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     for i in range(len(scaler)):
         params[i] = operator(params[i], scaler[i])
 
@@ -121,6 +201,15 @@ def param_scaling(params, scaler, operator):
 
 
 def compute_scaler(params):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     scaler = []
 
     # Bigger steps for the first 2 params
@@ -138,6 +227,15 @@ def compute_scaler(params):
 
 
 def obtain_experiment_params(base_bv_array, HTO_GEM_ary, sample_num, estimated_total_cell_num, params0 = None):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     drop_num = 80000
     capture_rate = 0.5
     cell_num_ary = [estimated_total_cell_num / sample_num for i in range(sample_num)]
@@ -178,6 +276,15 @@ def obtain_experiment_params(base_bv_array, HTO_GEM_ary, sample_num, estimated_t
 
 
 def obtain_HTO_cell_n_drop_num(data_df, base_bv_array, sample_num, estimated_total_cell_num, confidence_threshold):
+    """Obtain high and low array from data.
+
+    Args:
+        data (pandas.DataFrame): Cell dataframe
+
+    Returns:
+        list, list: High and Low array.
+
+    """
     hto_num_ary = []
     HTO_num_ary = []
     estimated_drop_num_ary = []

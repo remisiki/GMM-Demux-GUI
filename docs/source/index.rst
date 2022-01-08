@@ -10,6 +10,7 @@
    
 
    install
+   api
    usage
    about
 
