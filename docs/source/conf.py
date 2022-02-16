@@ -38,6 +38,11 @@ extensions = [
 	'sphinx_rtd_dark_mode'
 ]
 
+# intersphinx_mapping = {
+# 	'numpy': ('http://docs.scipy.org/doc/numpy/', None),
+# 	'int': ('https://docs.python.org/3/library/functions.html#int', None)
+# }
+
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
 

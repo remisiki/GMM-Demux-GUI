@@ -98,7 +98,7 @@ def main():
 
         # Obtain classification result
         GMM_full_df, class_name_ary = \
-                classifier.classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, GMM_df.index, GMM_df.columns.values)
+                classifier.classify_drops(base_bv_array, high_array, low_array, GMM_df)
 
         # Store classification results
         if args.full:

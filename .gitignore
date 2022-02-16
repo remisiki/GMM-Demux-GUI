@@ -8,3 +8,4 @@ docs/Makefile
 archieve/
 *test*
 *generated*
+tmp*

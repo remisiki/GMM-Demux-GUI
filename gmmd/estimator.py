@@ -5,15 +5,6 @@ from scipy.stats import binom
 from scipy.stats import binom_test
 
 def compute_multiplet_rates_asymp(cell_num, sample_num, drop_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     no_drop_rate = (1 - 1 / drop_num)
     cells_per_sample = round(cell_num / sample_num)
     drop_with_cells = (1 - pow(no_drop_rate, cell_num)) * drop_num
@@ -28,15 +19,6 @@ def compute_multiplet_rates_asymp(cell_num, sample_num, drop_num):
 
 
 def compute_relative_SSM_rate_asymp(cell_num, drop_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     no_drop_rate = (1 - 1 / drop_num)
     drop_with_cells = (1 - pow(no_drop_rate, cell_num)) * drop_num
     singlet_drops = cell_num * pow(no_drop_rate, cell_num - 1)
@@ -45,28 +27,10 @@ def compute_relative_SSM_rate_asymp(cell_num, drop_num):
 
 
 def compute_relative_SSM_rate(SSM_rate, singlet_rate):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     return SSM_rate / singlet_rate
 
 
 def get_min_hto_num(cell_num, drop_num, SSM_threshold, sample_num = 1):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     sample_num = 1
     while True:
         #(MSM_rate, SSM_rate, singlet_rate) = compute_multiplet_rates(cell_num, sample_num, drop_num)
@@ -82,15 +46,6 @@ def get_min_hto_num(cell_num, drop_num, SSM_threshold, sample_num = 1):
 
 
 def cell_num_estimator(a_num, captured_drop_num, capture_rate):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     estimated_drop_num = captured_drop_num / capture_rate
     base = 1 - 1 / estimated_drop_num
     power = 1 - a_num / captured_drop_num
@@ -101,29 +56,11 @@ def cell_num_estimator(a_num, captured_drop_num, capture_rate):
 
 
 def drop_num_estimator(a_num, b_num, shared_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     drop_num = a_num * b_num / shared_num 
     return drop_num 
 
 
 def compute_shared_num(drop_num, A_num, B_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     A_rate = compute_mix_rate(drop_num, B_num) 
     #print("A_rate: ", A_rate)
     shared_num = A_rate *  A_num
@@ -132,30 +69,12 @@ def compute_shared_num(drop_num, A_num, B_num):
 
 # Computes the rate of drops that have certain cells in them.
 def compute_mix_rate(drop_num, cell_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     no_drop_rate = (1 - 1 / drop_num)
     cell_in_rate = 1 - pow(no_drop_rate, cell_num)
     return cell_in_rate
 
 
 def compute_SSM_rate_with_cell_num(cell_num, drop_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     no_drop_rate = (1 - 1 / drop_num)
     singlet_drops = cell_num * pow(no_drop_rate, cell_num - 1)
     drop_with_cells = (1 - pow(no_drop_rate, cell_num)) * drop_num
@@ -164,15 +83,6 @@ def compute_SSM_rate_with_cell_num(cell_num, drop_num):
 
 
 def compute_SSD_num(drop_num, subject_cell_num, total_cell_num, ambiguous_rate = 0):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     no_drop_rate = (1 - 1 / drop_num)
     non_subject_num = total_cell_num - subject_cell_num
     SSD_prob = (1 - pow(no_drop_rate, subject_cell_num)) \
@@ -182,28 +92,10 @@ def compute_SSD_num(drop_num, subject_cell_num, total_cell_num, ambiguous_rate =
 
 
 def compute_GEM_prob(drop_num, cell_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     return 1 - binom.pmf(0, cell_num, 1 / drop_num)
 
 
 def phony_cluster_MSM_rate(cell_num_ary, cell_type_num = 2):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     assert(cell_type_num >= 2)
 
     total_cell_num = sum(cell_num_ary)
@@ -213,15 +105,6 @@ def phony_cluster_MSM_rate(cell_num_ary, cell_type_num = 2):
 
 
 def get_tau_cell_num(drop_num, total_cell_num, cluster_GEM_num, ambiguous_rate = 0.0):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     SSD_prob = cluster_GEM_num / drop_num 
     no_drop_rate = 1 - 1 / drop_num
     certain_rate = 1 - ambiguous_rate
@@ -234,15 +117,6 @@ def get_tau_cell_num(drop_num, total_cell_num, cluster_GEM_num, ambiguous_rate =
 
 
 def pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate = 0):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     #print("==================")
 
     total_cell_num = sum(cell_num_ary)
@@ -277,29 +151,11 @@ def pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate,
 
 
 def test_phony_hypothesis(cluster_MSM_num, cluster_GEM_num, cell_num_ary, capture_rate):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     MSM_rate = phony_cluster_MSM_rate(cell_num_ary)
     return binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "less")
 
 
 def test_pure_hypothesis(cluster_MSM_num, drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate = 0):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     MSM_rate = pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate)
     # print("Estimated MSM rate: ", MSM_rate)
     return MSM_rate, binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")
@@ -344,15 +200,6 @@ def debug_pure_cluster_MSM_rate(drop_num, tau_cell_num, sample_num_ary, capture_
 
 
 def compute_observation_probability(drop_num, capture_rate, cell_num_ary, HTO_GEM_ary, base_bv_array, sample_num):
-    """Obtain high and low array from data.
-
-    Args:
-        data (pandas.DataFrame): Cell dataframe
-
-    Returns:
-        list, list: High and Low array.
-
-    """
     log_probability = 0
 
     GEM_prob_ary = []
@@ -369,7 +216,7 @@ def compute_observation_probability(drop_num, capture_rate, cell_num_ary, HTO_GE
         GEM_formation_prob = 1
 
         for sample_idx in range(sample_num):
-            if compute.check_set_bit(base_bv_array[bv_idx], sample_idx, sample_num):
+            if compute.check_set_bit(base_bv_array[bv_idx], sample_idx):
                 GEM_formation_prob *= GEM_prob_ary[sample_idx]
 
         ori_GEM_num = round(HTO_GEM_ary[i] / capture_rate)
