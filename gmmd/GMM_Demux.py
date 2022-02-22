@@ -145,7 +145,7 @@ def main():
         estimated_total_cell_num = args.summary
 
         # Infer parameters
-        HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array, sample_num)
+        HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array)
 
         params0 = [80000, 0.5]
 

@@ -27,6 +27,17 @@ def compute_relative_SSM_rate_asymp(cell_num, drop_num):
 
 
 def compute_relative_SSM_rate(SSM_rate, singlet_rate):
+    """Compute relative SSM rate over singlet rate.
+
+    :param SSM_rate: SSM rate.
+    :type SSM_rate: :class:`float`
+    :param singlet_rate: Singlet rate.
+    :type singlet_rate: :class:`float`
+
+    :return: Relative SSM rate.
+    :rtype: :class:`float`
+
+    """
     return SSM_rate / singlet_rate
 
 
@@ -75,6 +86,17 @@ def compute_mix_rate(drop_num, cell_num):
 
 
 def compute_SSM_rate_with_cell_num(cell_num, drop_num):
+    """Compute SSM rate with cell numbers.
+
+    :param cell_num: Number of cells.
+    :type cell_num: :class:`float`
+    :param drop_num: Number of droplets.
+    :type drop_num: :class:`int`
+
+    :return: Rate of SSM.
+    :rtype: :class:`float`
+
+    """
     no_drop_rate = (1 - 1 / drop_num)
     singlet_drops = cell_num * pow(no_drop_rate, cell_num - 1)
     drop_with_cells = (1 - pow(no_drop_rate, cell_num)) * drop_num
@@ -83,6 +105,21 @@ def compute_SSM_rate_with_cell_num(cell_num, drop_num):
 
 
 def compute_SSD_num(drop_num, subject_cell_num, total_cell_num, ambiguous_rate = 0):
+    """Compute SSM rate with cell numbers.
+
+    :param drop_num: Number of droplets.
+    :type drop_num: :class:`int`
+    :param subject_cell_num: Number of subject cells.
+    :type subject_cell_num: :class:`int`
+    :param total_cell_num: Number of all cells.
+    :type total_cell_num: :class:`int`
+    :param ambiguous_rate: Ambiguous rate.
+    :type ambiguous_rate: :class:`float`, Default = ``0``
+
+    :return: SSD number.
+    :rtype: :class:`int`
+
+    """
     no_drop_rate = (1 - 1 / drop_num)
     non_subject_num = total_cell_num - subject_cell_num
     SSD_prob = (1 - pow(no_drop_rate, subject_cell_num)) \
@@ -96,6 +133,17 @@ def compute_GEM_prob(drop_num, cell_num):
 
 
 def phony_cluster_MSM_rate(cell_num_ary, cell_type_num = 2):
+    """Estimate phony cluster MSM rate with cell numbers.
+
+    :param cell_num_ary: List of cell numbers.
+    :type cell_num_ary: :class:`list`
+    :param cell_type_num: Number of MSMs (≥2).
+    :type cell_type_num: :class:`int`, Default = ``2`` 
+
+    :return: MSM rate.
+    :rtype: :class:`float`
+
+    """
     assert(cell_type_num >= 2)
 
     total_cell_num = sum(cell_num_ary)
@@ -105,6 +153,21 @@ def phony_cluster_MSM_rate(cell_num_ary, cell_type_num = 2):
 
 
 def get_tau_cell_num(drop_num, total_cell_num, cluster_GEM_num, ambiguous_rate = 0.0):
+    """Get tau cell number.
+
+    :param drop_num: Number of droplets.
+    :type drop_num: :class:`int`
+    :param total_cell_num: Number of all cells.
+    :type total_cell_num: :class:`int`
+    :param cluster_GEM_num: Number of GEMs.
+    :type cluster_GEM_num: :class:`int`
+    :param ambiguous_rate: Ambiguous rate.
+    :type ambiguous_rate: :class:`float`, Default = ``0``
+
+    :return: Tau cell number.
+    :rtype: :class:`int`
+
+    """
     SSD_prob = cluster_GEM_num / drop_num 
     no_drop_rate = 1 - 1 / drop_num
     certain_rate = 1 - ambiguous_rate
@@ -117,6 +180,23 @@ def get_tau_cell_num(drop_num, total_cell_num, cluster_GEM_num, ambiguous_rate =
 
 
 def pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate = 0):
+    """Estimate pure cluster MSM rate.
+
+    :param drop_num: Number of droplets.
+    :type drop_num: :class:`int`
+    :param cluster_GEM_num: Number of GEMs.
+    :type cluster_GEM_num: :class:`int`
+    :param cell_num_ary: List of cell numbers.
+    :type cell_num_ary: :class:`list`
+    :param capture_rate: Capture rate.
+    :type capture_rate: :class:`float`
+    :param ambiguous_rate: Ambiguous rate.
+    :type ambiguous_rate: :class:`float`, Default = ``0``
+
+    :return: MSM rate.
+    :rtype: :class:`float`
+
+    """
     #print("==================")
 
     total_cell_num = sum(cell_num_ary)
@@ -151,11 +231,45 @@ def pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate,
 
 
 def test_phony_hypothesis(cluster_MSM_num, cluster_GEM_num, cell_num_ary, capture_rate):
+    """Test phony-type hypothesis.
+
+    :param cluster_MSM_num: Number of MSMs.
+    :type cluster_MSM_num: :class:`int`
+    :param cluster_GEM_num: Number of GEMs.
+    :type cluster_GEM_num: :class:`int`
+    :param cell_num_ary: List of cell numbers.
+    :type cell_num_ary: :class:`list`
+    :param capture_rate: Capture rate.
+    :type capture_rate: :class:`float`
+
+    :return: P-value.
+    :rtype: :class:`float`
+
+    """
     MSM_rate = phony_cluster_MSM_rate(cell_num_ary)
     return binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "less")
 
 
 def test_pure_hypothesis(cluster_MSM_num, drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate = 0):
+    """Test pure-type hypothesis.
+
+    :param cluster_MSM_num: Number of MSMs.
+    :type cluster_MSM_num: :class:`int`
+    :param drop_num: Number of droplets.
+    :type drop_num: :class:`int`
+    :param cluster_GEM_num: Number of GEMs.
+    :type cluster_GEM_num: :class:`int`
+    :param cell_num_ary: List of cell numbers.
+    :type cell_num_ary: :class:`list`
+    :param capture_rate: Capture rate.
+    :type capture_rate: :class:`float`
+    :param ambiguous_rate: Ambiguous rate.
+    :type ambiguous_rate: :class:`float`, Default = ``0``
+
+    :return: P-value.
+    :rtype: :class:`float`
+
+    """
     MSM_rate = pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate)
     # print("Estimated MSM rate: ", MSM_rate)
     return MSM_rate, binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")

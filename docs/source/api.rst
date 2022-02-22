@@ -27,23 +27,14 @@ Estimating Multiplet rates
 .. autosummary::
 	:toctree: generated/
 
-	compute_multiplet_rates_asymp
-	compute_relative_SSM_rate_asymp
 	compute_relative_SSM_rate
-	get_min_hto_num
-	cell_num_estimator
-	drop_num_estimator
-	compute_shared_num
-	compute_mix_rate
 	compute_SSM_rate_with_cell_num
 	compute_SSD_num
-	compute_GEM_prob
 	phony_cluster_MSM_rate
 	get_tau_cell_num
 	pure_cluster_MSM_rate
 	test_phony_hypothesis
 	test_pure_hypothesis
-	compute_observation_probability
 
 Computing Tools
 ---------------
@@ -59,8 +50,6 @@ Computing Tools
 	set_bit
 	gather_multiplet_rates
 	obtain_HTO_GEM_num
-	experiment_params_wrapper
 	param_scaling
 	compute_scaler
 	obtain_experiment_params
-	obtain_HTO_cell_n_drop_num
