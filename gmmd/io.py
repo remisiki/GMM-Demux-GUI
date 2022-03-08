@@ -9,7 +9,7 @@ import os
 from scipy.sparse import csr_matrix
 
 pd.options.mode.chained_assignment = None
-                                                                                                                        
+
 def clr_norm(data_df):
     for hto in data_df.columns.values:
         compensated_values = data_df.loc[:,hto].values + 1

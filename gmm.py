@@ -3,12 +3,14 @@ def warn(*args, **kwargs):
     pass
 import warnings
 warnings.warn = warn
+import traceback
 
 import pandas as pd
 from gmmd import compute
 from gmmd import estimator
 from gmmd import classifier
 from gmmd import io
+from gmmd import plot
 from sys import argv
 import sys
 import argparse
@@ -29,6 +31,7 @@ def main(command):
     parser.add_argument("-o", "--output", help="The path for storing the Same-Sample-Droplets (SSDs). SSDs are stored in mtx format. Requires a path argument.", type=str, default="SSD_mtx")
     parser.add_argument("-f", "--full", help="Generate the full classification report. Requires a path argument.", type=str)
     parser.add_argument("-c", "--csv", help="Take input in csv format, instead of mmx format.", action='store_true')
+    parser.add_argument("-p", "--plot", help="Plot.", action='store_true')
     parser.add_argument("-t", "--threshold", help="Provide the confidence threshold value. Requires a float in (0,1). Default value: 0.8", type=float, default=0.8)
     parser.add_argument("-s", "--simplified", help="Generate the simplified classification report. Requires a path argument.", type=str)
     parser.add_argument("-u", "--summary", help = "Generate the statstic summary of the dataset. Including MSM, SSM rates. Requires an estimated total number of cells in the assay as input.", type=int)
@@ -98,7 +101,11 @@ def main(command):
 
         # Obtain classification result
         GMM_full_df, class_name_ary = \
-                classifier.classify_drops(base_bv_array, high_array, low_array, sample_num, GEM_num, GMM_df.index, GMM_df.columns.values)
+                classifier.classify_drops(base_bv_array, high_array, low_array, GMM_df)
+
+        # Plot tSNE
+        if (args.plot):
+            plot.tsne_plot(GMM_df, GMM_full_df)
 
         # Store classification results
         if args.full:
@@ -119,7 +126,7 @@ def main(command):
         string =  string + "MSM-free droplets are stored in folder " + output_path + '\n'
         
         SSD_idx = classifier.obtain_SSD_list(purified_df, sample_num, extract_id_ary)
-        SSD_df = io.store_cellranger(full_df, SSD_idx, output_path)
+        io.store_cellranger(full_df, SSD_idx, output_path)
 
         # Record sample names for summary report.
         sampe_names = GMM_df.columns
@@ -146,7 +153,7 @@ def main(command):
         estimated_total_cell_num = args.summary
 
         # Infer parameters
-        HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array, sample_num)
+        HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array)
 
         params0 = [80000, 0.5]
 
@@ -159,9 +166,10 @@ def main(command):
                 combination_counter += comb(sample_num, i, True)
                 HTO_GEM_ary_main = HTO_GEM_ary[0:combination_counter]
                 params0 = compute.obtain_experiment_params(base_bv_array, HTO_GEM_ary_main, sample_num, estimated_total_cell_num, params0)
-        except:
+        except Exception as e:
             string += "GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated.\n"
-            return
+            traceback.print_exc()
+            return string
                 
 
         # Legacy parameter estimation

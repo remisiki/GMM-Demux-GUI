@@ -13,7 +13,7 @@ from gmmd import compute
 import matplotlib.pyplot as plt
 
 
-def obtain_arrays(data):
+def obtain_arrays(data, path = None):
     """Obtain post probabilities of the high and low Gaussian distribution.
 
     :param data: CLR-transformed HTO matrix.
@@ -26,6 +26,7 @@ def obtain_arrays(data):
     gmm = []
     high_array = []
     low_array = []
+    hto_array = data.columns
 
     for i in range(data.shape[1]):
         X = data.iloc[:,i].values[:, np.newaxis]
@@ -37,9 +38,16 @@ def obtain_arrays(data):
         responsibilities = gmm[-1].predict_proba(x)
         pdf = np.exp(logprob)
         pdf_individual = responsibilities * pdf[:, np.newaxis]
+
+        # Plot probabilities distribution
+        if (not path):
+            path = "/tmp/.gmm-demux/"
+        if (not os.path.exists(path)):
+            os.mkdirs(path)
         # print(len(pdf_individual))
-        # plt.plot(x, pdf_individual)
-        # plt.savefig("tmp.png")
+        plt.clf()
+        plt.plot(x, pdf_individual)
+        plt.savefig(os.path.join(path, f"pdf_{hto_array[i]}.png"))
 
         # print(gmm[-1].means_)
 
@@ -264,9 +272,9 @@ def obtain_SSD_list(data, sample_num, class_id_ary = None):
     if class_id_ary is not None:
         SSD_idx = []
         for class_id in class_id_ary:
-            SSD_idx.extend(data_df.index[data_df["Cluster_id"] == class_id])
+            SSD_idx.extend(data.index[data["Cluster_id"] == class_id])
     else:
-        SSD_idx = data_df.index[data_df["Cluster_id"] <= sample_num]
+        SSD_idx = data.index[data["Cluster_id"] <= sample_num]
 
     return SSD_idx
 
@@ -285,7 +293,7 @@ def obtain_MSM_list(data, sample_num, idx_list = None):
 
     """
     if idx_list == None:
-        MSM_idx = data.index[data_df["Cluster_id"] == sample_num + 1]
+        MSM_idx = data.index[data["Cluster_id"] == sample_num + 1]
     else:
         selected_df = data.loc[idx_list]
         MSM_idx = selected_df.index[selected_df["Cluster_id"] == sample_num + 1]
