@@ -10,6 +10,18 @@
     <height>720</height>
    </rect>
   </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>1080</width>
+    <height>720</height>
+   </size>
+  </property>
   <property name="windowTitle">
    <string>GMM-demux</string>
   </property>
@@ -53,528 +65,25 @@
          <property name="currentIndex">
           <number>0</number>
          </property>
-         <widget class="QWidget" name="tab_4">
+         <property name="usesScrollButtons">
+          <bool>true</bool>
+         </property>
+         <property name="tabsClosable">
+          <bool>false</bool>
+         </property>
+         <property name="movable">
+          <bool>false</bool>
+         </property>
+         <widget class="QWidget" name="tab_6">
           <attribute name="title">
-           <string>Files</string>
+           <string>Data Summary</string>
           </attribute>
-          <widget class="QLabel" name="label_10">
+          <widget class="QLabel" name="label_11">
            <property name="geometry">
             <rect>
              <x>10</x>
              <y>10</y>
-             <width>111</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Import from</string>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="select_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>460</x>
-             <y>10</y>
-             <width>31</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_2">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Output to</string>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="output_path">
-           <property name="geometry">
-            <rect>
-             <x>320</x>
-             <y>50</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string>SSD_mtx</string>
-           </property>
-           <property name="placeholderText">
-            <string>SSD_mtx</string>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="path">
-           <property name="geometry">
-            <rect>
-             <x>320</x>
-             <y>10</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string>/run/media/setsunayyw/0D7D06240D7D0624/SJTU/2021-09/研究/GMM-Demux-GUI/example_input/outs/filtered_feature_bc_matrix</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="raw_data_path">
-           <property name="geometry">
-            <rect>
-             <x>120</x>
-             <y>10</y>
-             <width>191</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="currentIndex">
-            <number>0</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>mtx file directory</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>csv file</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>full report directory</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QPushButton" name="select_out_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>460</x>
-             <y>50</y>
-             <width>31</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="tab">
-          <attribute name="title">
-           <string>HTO</string>
-          </attribute>
-          <widget class="QPlainTextEdit" name="hto_tags">
-           <property name="geometry">
-            <rect>
-             <x>210</x>
-             <y>50</y>
-             <width>171</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="toolTip">
-            <string>HTO_1+HTO_2</string>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>hto array</string>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="hto_array">
-           <property name="geometry">
-            <rect>
-             <x>210</x>
-             <y>10</y>
-             <width>171</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="toolTip">
-            <string>HTO_1,HTO_2,HTO_3,HTO_4</string>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string>HTO_1,HTO_2,HTO_3,HTO_4</string>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_3">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>hto tag(s) to extract</string>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="tab_2">
-          <attribute name="title">
-           <string>Optional Report</string>
-          </attribute>
-          <widget class="QPushButton" name="select_report_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>400</x>
-             <y>10</y>
-             <width>31</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="select_summary_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>400</x>
-             <y>50</y>
-             <width>31</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="cell_list_path">
-           <property name="geometry">
-            <rect>
-             <x>260</x>
-             <y>90</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QPushButton" name="select_cell_list_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
-           <property name="geometry">
-            <rect>
-             <x>400</x>
-             <y>90</y>
-             <width>31</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>...</string>
-           </property>
-           <property name="flat">
-            <bool>false</bool>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_5">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>90</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>cell list</string>
-           </property>
-          </widget>
-          <widget class="QComboBox" name="report_type">
-           <property name="geometry">
-            <rect>
-             <x>130</x>
-             <y>10</y>
-             <width>111</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="currentIndex">
-            <number>1</number>
-           </property>
-           <item>
-            <property name="text">
-             <string>full</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>simplified</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QLabel" name="label_6">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>111</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>classification</string>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="summary_path">
-           <property name="geometry">
-            <rect>
-             <x>260</x>
-             <y>50</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_4">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>50</y>
-             <width>181</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>data summary</string>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="report_path">
-           <property name="geometry">
-            <rect>
-             <x>260</x>
-             <y>10</y>
-             <width>131</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="phony_chance">
-           <property name="geometry">
-            <rect>
-             <x>300</x>
-             <y>170</y>
-             <width>91</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="toolTip">
-            <string>default: 0.05</string>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QPlainTextEdit" name="cell_count">
-           <property name="geometry">
-            <rect>
-             <x>300</x>
-             <y>130</y>
-             <width>91</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="verticalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="horizontalScrollBarPolicy">
-            <enum>Qt::ScrollBarAlwaysOff</enum>
-           </property>
-           <property name="lineWrapMode">
-            <enum>QPlainTextEdit::NoWrap</enum>
-           </property>
-           <property name="plainText">
-            <string/>
-           </property>
-           <property name="placeholderText">
-            <string/>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_9">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>170</y>
-             <width>261</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Estimated chance of phony GEM</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-          <widget class="QLabel" name="label_8">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>130</y>
-             <width>261</width>
-             <height>31</height>
-            </rect>
-           </property>
-           <property name="text">
-            <string>Estimated total number of cells</string>
-           </property>
-           <property name="alignment">
-            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
-           </property>
-          </widget>
-         </widget>
-         <widget class="QWidget" name="tab_3">
-          <attribute name="title">
-           <string>Threshold</string>
-          </attribute>
-          <widget class="QLabel" name="label_7">
-           <property name="geometry">
-            <rect>
-             <x>10</x>
-             <y>10</y>
-             <width>81</width>
+             <width>141</width>
              <height>31</height>
             </rect>
            </property>
@@ -588,11 +97,14 @@
           <widget class="QPlainTextEdit" name="threshold">
            <property name="geometry">
             <rect>
-             <x>100</x>
+             <x>170</x>
              <y>10</y>
              <width>91</width>
              <height>31</height>
             </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="toolTip">
             <string>default: 0.8</string>
@@ -606,39 +118,46 @@
            <property name="lineWrapMode">
             <enum>QPlainTextEdit::NoWrap</enum>
            </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
            <property name="plainText">
-            <string/>
+            <string>0.8</string>
            </property>
            <property name="placeholderText">
             <string/>
            </property>
           </widget>
-         </widget>
-         <widget class="QWidget" name="tab_5">
-          <attribute name="title">
-           <string>Plot</string>
-          </attribute>
-          <widget class="QLabel" name="label_21">
+          <widget class="QLabel" name="label_12">
            <property name="geometry">
             <rect>
              <x>10</x>
-             <y>10</y>
-             <width>71</width>
+             <y>50</y>
+             <width>141</width>
              <height>31</height>
             </rect>
            </property>
            <property name="text">
-            <string>Plot data</string>
+            <string>GEM count</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
-          <widget class="QPlainTextEdit" name="plot_path">
+          <widget class="QPlainTextEdit" name="GEM_num">
+           <property name="enabled">
+            <bool>true</bool>
+           </property>
            <property name="geometry">
             <rect>
-             <x>220</x>
-             <y>10</y>
-             <width>131</width>
+             <x>170</x>
+             <y>50</y>
+             <width>91</width>
              <height>31</height>
             </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
            <property name="verticalScrollBarPolicy">
             <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -649,122 +168,493 @@
            <property name="lineWrapMode">
             <enum>QPlainTextEdit::NoWrap</enum>
            </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
            <property name="plainText">
-            <string>HTO_1</string>
+            <string/>
            </property>
            <property name="placeholderText">
             <string/>
            </property>
           </widget>
-          <widget class="QPushButton" name="select_plot_path">
-           <property name="enabled">
-            <bool>true</bool>
-           </property>
+          <widget class="QLabel" name="label_13">
            <property name="geometry">
             <rect>
-             <x>360</x>
-             <y>10</y>
-             <width>31</width>
+             <x>10</x>
+             <y>90</y>
+             <width>141</width>
              <height>31</height>
             </rect>
            </property>
            <property name="text">
-            <string>...</string>
+            <string>Sample count</string>
            </property>
-           <property name="flat">
-            <bool>false</bool>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
-          <widget class="QComboBox" name="plot_type">
+          <widget class="QPlainTextEdit" name="sample_num">
            <property name="geometry">
             <rect>
-             <x>90</x>
-             <y>10</y>
-             <width>111</width>
+             <x>170</x>
+             <y>90</y>
+             <width>91</width>
              <height>31</height>
             </rect>
            </property>
-           <property name="currentText">
-            <string>tSNE</string>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
-           <property name="currentIndex">
-            <number>1</number>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
            </property>
-           <item>
-            <property name="text">
-             <string>distribution</string>
-            </property>
-           </item>
-           <item>
-            <property name="text">
-             <string>tSNE</string>
-            </property>
-           </item>
-          </widget>
-          <widget class="QPushButton" name="save_png">
-           <property name="enabled">
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
             <bool>true</bool>
            </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="droplet_num">
            <property name="geometry">
             <rect>
-             <x>390</x>
-             <y>10</y>
-             <width>31</width>
+             <x>170</x>
+             <y>170</y>
+             <width>91</width>
              <height>31</height>
             </rect>
            </property>
-           <property name="icon">
-            <iconset theme="download">
-             <normaloff>.</normaloff>.</iconset>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
            </property>
-           <property name="flat">
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_14">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>170</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Droplet count</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="cell_num">
+           <property name="geometry">
+            <rect>
+             <x>170</x>
+             <y>210</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_15">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>210</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Cell count</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="total_num">
+           <property name="geometry">
+            <rect>
+             <x>170</x>
+             <y>130</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="toolTip">
+            <string>default: 0.8</string>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_16">
+           <property name="geometry">
+            <rect>
+             <x>10</x>
+             <y>130</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Total cell count</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="capture_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>10</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_17">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>10</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Capture rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="singlet_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>50</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_18">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>50</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Singlet rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="msm_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>90</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_19">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>90</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>MSM rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="ssm_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>130</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="overwriteMode">
             <bool>false</bool>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_20">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>130</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>SSM rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="negative_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>170</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_22">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>170</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Negative rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+           </property>
+          </widget>
+          <widget class="QPlainTextEdit" name="unclear_rate">
+           <property name="geometry">
+            <rect>
+             <x>480</x>
+             <y>210</y>
+             <width>91</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="focusPolicy">
+            <enum>Qt::NoFocus</enum>
+           </property>
+           <property name="verticalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="horizontalScrollBarPolicy">
+            <enum>Qt::ScrollBarAlwaysOff</enum>
+           </property>
+           <property name="lineWrapMode">
+            <enum>QPlainTextEdit::NoWrap</enum>
+           </property>
+           <property name="readOnly">
+            <bool>true</bool>
+           </property>
+           <property name="plainText">
+            <string/>
+           </property>
+           <property name="placeholderText">
+            <string/>
+           </property>
+          </widget>
+          <widget class="QLabel" name="label_23">
+           <property name="geometry">
+            <rect>
+             <x>320</x>
+             <y>210</y>
+             <width>141</width>
+             <height>31</height>
+            </rect>
+           </property>
+           <property name="text">
+            <string>Unclear rate</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
            </property>
           </widget>
          </widget>
-        </widget>
-       </item>
-      </layout>
-     </widget>
-    </item>
-    <item row="0" column="1">
-     <widget class="QFrame" name="frame_plot">
-      <property name="sizePolicy">
-       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
-        <horstretch>0</horstretch>
-        <verstretch>0</verstretch>
-       </sizepolicy>
-      </property>
-      <property name="minimumSize">
-       <size>
-        <width>426</width>
-        <height>326</height>
-       </size>
-      </property>
-      <property name="frameShape">
-       <enum>QFrame::StyledPanel</enum>
-      </property>
-      <property name="frameShadow">
-       <enum>QFrame::Raised</enum>
-      </property>
-      <layout class="QVBoxLayout" name="verticalLayout_2">
-       <item>
-        <widget class="QLabel" name="label_plot">
-         <property name="minimumSize">
-          <size>
-           <width>406</width>
-           <height>306</height>
-          </size>
-         </property>
-         <property name="text">
-          <string/>
-         </property>
-         <property name="scaledContents">
-          <bool>false</bool>
-         </property>
-         <property name="alignment">
-          <set>Qt::AlignCenter</set>
-         </property>
         </widget>
        </item>
       </layout>
@@ -798,18 +688,169 @@
         </item>
        </layout>
       </widget>
+      <widget class="QWidget" name="tab_7">
+       <attribute name="title">
+        <string>GEM Data</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_4">
+        <item row="0" column="0">
+         <widget class="QTableWidget" name="dataTable">
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="horizontalScrollMode">
+           <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_8">
+       <attribute name="title">
+        <string>Classification Result</string>
+       </attribute>
+       <layout class="QGridLayout" name="gridLayout_5">
+        <item row="0" column="0">
+         <widget class="QTableWidget" name="classificationTable">
+          <property name="sizeAdjustPolicy">
+           <enum>QAbstractScrollArea::AdjustToContents</enum>
+          </property>
+          <property name="editTriggers">
+           <set>QAbstractItemView::NoEditTriggers</set>
+          </property>
+          <property name="horizontalScrollMode">
+           <enum>QAbstractItemView::ScrollPerPixel</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="QWidget" name="tab_9">
+       <attribute name="title">
+        <string>Estimation Report</string>
+       </attribute>
+       <widget class="QTableWidget" name="perSampleTable">
+        <property name="geometry">
+         <rect>
+          <x>6</x>
+          <y>6</y>
+          <width>841</width>
+          <height>141</height>
+         </rect>
+        </property>
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="sizeAdjustPolicy">
+         <enum>QAbstractScrollArea::AdjustToContents</enum>
+        </property>
+        <property name="editTriggers">
+         <set>QAbstractItemView::NoEditTriggers</set>
+        </property>
+        <property name="horizontalScrollMode">
+         <enum>QAbstractItemView::ScrollPerPixel</enum>
+        </property>
+        <property name="gridStyle">
+         <enum>Qt::SolidLine</enum>
+        </property>
+        <property name="rowCount">
+         <number>3</number>
+        </property>
+        <property name="columnCount">
+         <number>5</number>
+        </property>
+        <attribute name="horizontalHeaderCascadingSectionResizes">
+         <bool>true</bool>
+        </attribute>
+        <attribute name="verticalHeaderCascadingSectionResizes">
+         <bool>true</bool>
+        </attribute>
+        <row/>
+        <row/>
+        <row/>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+        <column/>
+       </widget>
+      </widget>
      </widget>
     </item>
-    <item row="1" column="1">
-     <widget class="QFrame" name="frame_buttons">
+    <item row="0" column="1">
+     <widget class="QFrame" name="frame_plot">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Ignored" vsizetype="Ignored">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>426</width>
+        <height>326</height>
+       </size>
+      </property>
       <property name="frameShape">
        <enum>QFrame::StyledPanel</enum>
       </property>
       <property name="frameShadow">
        <enum>QFrame::Raised</enum>
       </property>
-      <layout class="QGridLayout" name="gridLayout_3">
-       <item row="0" column="0">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
+       <item>
+        <widget class="QLabel" name="label_plot">
+         <property name="minimumSize">
+          <size>
+           <width>406</width>
+           <height>306</height>
+          </size>
+         </property>
+         <property name="contextMenuPolicy">
+          <enum>Qt::CustomContextMenu</enum>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <property name="scaledContents">
+          <bool>false</bool>
+         </property>
+         <property name="alignment">
+          <set>Qt::AlignCenter</set>
+         </property>
+        </widget>
+       </item>
+      </layout>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QFrame" name="frame_buttons">
+      <property name="sizePolicy">
+       <sizepolicy hsizetype="Fixed" vsizetype="Preferred">
+        <horstretch>0</horstretch>
+        <verstretch>0</verstretch>
+       </sizepolicy>
+      </property>
+      <property name="minimumSize">
+       <size>
+        <width>200</width>
+        <height>0</height>
+       </size>
+      </property>
+      <property name="frameShape">
+       <enum>QFrame::StyledPanel</enum>
+      </property>
+      <property name="frameShadow">
+       <enum>QFrame::Raised</enum>
+      </property>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
         <spacer name="verticalSpacer">
          <property name="orientation">
           <enum>Qt::Vertical</enum>
@@ -825,7 +866,7 @@
          </property>
         </spacer>
        </item>
-       <item row="1" column="0">
+       <item>
         <widget class="QPushButton" name="read">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -838,8 +879,11 @@
          </property>
         </widget>
        </item>
-       <item row="2" column="0">
-        <widget class="QPushButton" name="run">
+       <item>
+        <widget class="QPushButton" name="classify">
+         <property name="enabled">
+          <bool>true</bool>
+         </property>
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -847,11 +891,24 @@
           </sizepolicy>
          </property>
          <property name="text">
-          <string>Run</string>
+          <string>Classify</string>
          </property>
         </widget>
        </item>
-       <item row="3" column="0">
+       <item>
+        <widget class="QPushButton" name="estimate">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="text">
+          <string>Estimate</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QPushButton" name="plot">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -864,7 +921,7 @@
          </property>
         </widget>
        </item>
-       <item row="4" column="0">
+       <item>
         <widget class="QPushButton" name="exit">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
@@ -923,9 +980,16 @@
     <property name="title">
      <string>&amp;Run</string>
     </property>
-    <addaction name="actionRun"/>
+    <widget class="QMenu" name="menuPlot">
+     <property name="title">
+      <string>Plot</string>
+     </property>
+     <addaction name="actionPDF"/>
+     <addaction name="actiontSNE"/>
+    </widget>
     <addaction name="actionClassify"/>
-    <addaction name="actionPlot"/>
+    <addaction name="actionEstimate"/>
+    <addaction name="menuPlot"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRun"/>
@@ -961,11 +1025,17 @@
    </property>
   </action>
   <action name="actionAdd_full_report">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Add full report</string>
    </property>
   </action>
   <action name="actionRun">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Run</string>
    </property>
@@ -973,15 +1043,10 @@
     <string>F5</string>
    </property>
   </action>
-  <action name="actionPlot">
-   <property name="text">
-    <string>Plot</string>
-   </property>
-   <property name="shortcut">
-    <string>F7</string>
-   </property>
-  </action>
   <action name="actionClassify">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Classify</string>
    </property>
@@ -998,21 +1063,60 @@
    </property>
   </action>
   <action name="actionSave_full_results_to">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save full results to...</string>
    </property>
   </action>
   <action name="actionSave_simplified_results_to">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save simplified results to...</string>
    </property>
   </action>
   <action name="actionSave_MSM_free_results_to">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="text">
     <string>Save MSM-free results to...</string>
    </property>
    <property name="shortcut">
     <string>Ctrl+S</string>
+   </property>
+  </action>
+  <action name="actionEstimate">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>Estimate</string>
+   </property>
+   <property name="shortcut">
+    <string>F8</string>
+   </property>
+  </action>
+  <action name="actionPDF">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>PDF</string>
+   </property>
+  </action>
+  <action name="actiontSNE">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
+   <property name="text">
+    <string>tSNE</string>
+   </property>
+   <property name="shortcut">
+    <string>F7</string>
    </property>
   </action>
  </widget>

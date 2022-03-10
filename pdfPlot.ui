@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PdfPlotDialog</class>
+ <widget class="QDialog" name="PdfPlotDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>320</width>
+    <height>240</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>PDF Plot Options</string>
+  </property>
+  <widget class="QLabel" name="label_21">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>40</y>
+     <width>301</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="text">
+    <string>Select a HTO type to plot with:</string>
+   </property>
+  </widget>
+  <widget class="QComboBox" name="hto_to_plot">
+   <property name="geometry">
+    <rect>
+     <x>10</x>
+     <y>100</y>
+     <width>125</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <property name="currentText">
+    <string/>
+   </property>
+   <property name="currentIndex">
+    <number>-1</number>
+   </property>
+   <property name="sizeAdjustPolicy">
+    <enum>QComboBox::AdjustToContents</enum>
+   </property>
+  </widget>
+  <widget class="QPushButton" name="OK">
+   <property name="geometry">
+    <rect>
+     <x>220</x>
+     <y>190</y>
+     <width>80</width>
+     <height>36</height>
+    </rect>
+   </property>
+   <property name="sizePolicy">
+    <sizepolicy hsizetype="Minimum" vsizetype="Expanding">
+     <horstretch>0</horstretch>
+     <verstretch>0</verstretch>
+    </sizepolicy>
+   </property>
+   <property name="text">
+    <string>OK</string>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>ClassifierDialog</class>
- <widget class="QDialog" name="ClassifierDialog">
+ <class>HtoDialog</class>
+ <widget class="QDialog" name="HtoDialog">
   <property name="geometry">
    <rect>
     <x>0</x>
@@ -11,19 +11,19 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Classifier Options</string>
+   <string>Options</string>
   </property>
-  <widget class="QPlainTextEdit" name="hto_tags">
+  <widget class="QPlainTextEdit" name="hto_array">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>120</y>
+     <y>100</y>
      <width>291</width>
      <height>31</height>
     </rect>
    </property>
    <property name="toolTip">
-    <string>HTO_1+HTO_2</string>
+    <string>HTO_1,HTO_2,HTO_3,HTO_4</string>
    </property>
    <property name="verticalScrollBarPolicy">
     <enum>Qt::ScrollBarAlwaysOff</enum>
@@ -35,70 +35,26 @@
     <enum>QPlainTextEdit::NoWrap</enum>
    </property>
    <property name="plainText">
-    <string/>
+    <string>HTO_1,HTO_2,HTO_3,HTO_4</string>
    </property>
    <property name="placeholderText">
     <string/>
    </property>
   </widget>
-  <widget class="QLabel" name="label_3">
+  <widget class="QLabel" name="label">
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>50</y>
-     <width>301</width>
+     <y>30</y>
+     <width>291</width>
      <height>51</height>
     </rect>
    </property>
    <property name="text">
-    <string>HTO tag(s) to extract, separated  by a comma (,):</string>
+    <string>Please input names of HTO, separated by a comma (,):</string>
    </property>
    <property name="wordWrap">
     <bool>true</bool>
-   </property>
-  </widget>
-  <widget class="QPlainTextEdit" name="threshold">
-   <property name="geometry">
-    <rect>
-     <x>210</x>
-     <y>10</y>
-     <width>91</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="toolTip">
-    <string>default: 0.8</string>
-   </property>
-   <property name="verticalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
-   <property name="horizontalScrollBarPolicy">
-    <enum>Qt::ScrollBarAlwaysOff</enum>
-   </property>
-   <property name="lineWrapMode">
-    <enum>QPlainTextEdit::NoWrap</enum>
-   </property>
-   <property name="plainText">
-    <string>0.8</string>
-   </property>
-   <property name="placeholderText">
-    <string/>
-   </property>
-  </widget>
-  <widget class="QLabel" name="label_8">
-   <property name="geometry">
-    <rect>
-     <x>10</x>
-     <y>10</y>
-     <width>81</width>
-     <height>31</height>
-    </rect>
-   </property>
-   <property name="text">
-    <string>Threshold</string>
-   </property>
-   <property name="alignment">
-    <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
    </property>
   </widget>
   <widget class="QPushButton" name="OK">

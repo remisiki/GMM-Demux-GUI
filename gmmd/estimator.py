@@ -1,8 +1,11 @@
-from gmmd import compute
+from gmmd import compute, classifier
 from math import pow
 from math import log
 from scipy.stats import binom
 from scipy.stats import binom_test
+from scipy.special import comb
+import traceback
+import pandas as pd
 
 def compute_multiplet_rates_asymp(cell_num, sample_num, drop_num):
     no_drop_rate = (1 - 1 / drop_num)
@@ -344,3 +347,67 @@ def compute_observation_probability(drop_num, capture_rate, cell_num_ary, HTO_GE
         #probability *= sample_binom_prob
 
     return log_probability
+
+
+def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_threshold, estimated_total_cell_num, SSD_idx, sample_names):
+    negative_num, unclear_num = classifier.count_bad_droplets(GMM_full_df, confidence_threshold)
+    HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array)
+    params0 = [80000, 0.5]
+
+    for i in range(sample_num):
+        params0.append(round(HTO_GEM_ary[i] * estimated_total_cell_num / sum(HTO_GEM_ary[:sample_num])))
+
+    combination_counter = 0
+    try:
+        for i in range(1, sample_num + 1):
+            combination_counter += comb(sample_num, i, True)
+            HTO_GEM_ary_main = HTO_GEM_ary[0:combination_counter]
+            params0 = compute.obtain_experiment_params(base_bv_array, HTO_GEM_ary_main, sample_num, estimated_total_cell_num, params0)
+    except:
+        traceback.print_exc()
+        return -1
+
+    (drop_num, capture_rate, *cell_num_ary) = params0
+
+    # SSD_idx = classifier.obtain_SSD_list(purified_df, sample_num, extract_id_ary)
+
+    SSM_rate_ary = [compute_SSM_rate_with_cell_num(cell_num_ary[i], drop_num) for i in range(sample_num)]
+    rounded_cell_num_ary = [round(cell_num) for cell_num in cell_num_ary]
+    SSD_count_ary = classifier.get_SSD_count_ary(purified_df, SSD_idx, sample_num)
+    count_ary = classifier.count_by_class(purified_df, base_bv_array)
+    MSM_rate, SSM_rate, singlet_rate = compute.gather_multiplet_rates(count_ary, SSM_rate_ary, sample_num)
+
+    full_report_dict = {
+            "droplet_num": round(drop_num),
+            "capture_rate": "%5.2f" % (capture_rate * 100),
+            "cell_num": sum(rounded_cell_num_ary),
+            "singlet_rate": "%5.2f" % (singlet_rate * 100),
+            "msm_rate": "%5.2f" % (MSM_rate * 100),
+            "ssm_rate": "%5.2f" % (SSM_rate * 100),
+            # "RSSM": "%5.2f" % (compute_relative_SSM_rate(SSM_rate, singlet_rate) * 100),
+            "negative_rate": "%5.2f" % (negative_num / GMM_full_df.shape[0] * 100),
+            "unclear_rate": "%5.2f" % (unclear_num / GMM_full_df.shape[0] * 100)
+            }
+
+    # full_report_columns = [
+    #         "#Drops",
+    #         "Capture rate",
+    #         "#Cells",
+    #         "Singlet",
+    #         "MSM",
+    #         "SSM",
+    #         "RSSM",
+    #         "Negative",
+    #         "Unclear"
+    #         ]
+
+    # full_report_df = pd.DataFrame(full_report_dict, index = ["Total"], columns=full_report_columns)
+
+    sample_df = pd.DataFrame(data=[
+            ["%d" % num for num in rounded_cell_num_ary],
+            ["%d" % num for num in SSD_count_ary],
+            ["%5.2f" % (num * 100) for num in SSM_rate_ary]
+            ],
+            columns = sample_names, index = ["Cell count", "SSD count", "Relative SSM rate"])
+
+    return full_report_dict, sample_df

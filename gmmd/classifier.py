@@ -32,7 +32,7 @@ def obtain_arrays(data, path = None):
         X = data.iloc[:,i].values[:, np.newaxis]
 
         # GMM values
-        gmm.append(GaussianMixture(2).fit(X))
+        gmm.append(GaussianMixture(2, random_state=0).fit(X))
         x = np.linspace(-6, 6, 1000)[:, np.newaxis]
         logprob = gmm[-1].score_samples(x)
         responsibilities = gmm[-1].predict_proba(x)
@@ -43,7 +43,7 @@ def obtain_arrays(data, path = None):
         if (not path):
             path = "/tmp/.gmm-demux/"
         if (not os.path.exists(path)):
-            os.mkdirs(path)
+            os.makedirs(path)
         # print(len(pdf_individual))
         plt.clf()
         plt.plot(x, pdf_individual)
@@ -82,6 +82,7 @@ def classify_drops(base_bv_array, high_array, low_array, data):
     sample_num = len(column)
     GEM_num = len(index)
     classified_ary = np.full(GEM_num, 0)
+    classified_name_ary = np.full(GEM_num, None)
     confidence_ary = np.full(GEM_num, 0.0)
 
     class_name_array = ["negative"]
@@ -109,10 +110,11 @@ def classify_drops(base_bv_array, high_array, low_array, data):
         update_idx = (tmp_confidence_ary > confidence_ary).nonzero()[0]
         confidence_ary[update_idx] = tmp_confidence_ary[update_idx]
         classified_ary[update_idx] = i
+        classified_name_ary[update_idx] = class_name_array[i]
 
 
-    GMM_array = np.column_stack(tuple([classified_ary, confidence_ary]))
-    GMM_full_df = pd.DataFrame(data=GMM_array, index = index, columns = ["Cluster_id", "Confidence"])
+    GMM_array = np.column_stack(tuple([classified_ary, classified_name_ary, confidence_ary]))
+    GMM_full_df = pd.DataFrame(data=GMM_array, index = index, columns = ["Cluster_id", "Class_name", "Confidence"])
     GMM_full_df["Cluster_id"] = GMM_full_df["Cluster_id"].astype(int)
 
     return GMM_full_df, class_name_array
