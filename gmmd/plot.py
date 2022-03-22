@@ -22,6 +22,10 @@ def tsne_plot(data, classification, path = None):
 		s = 2, 
 		alpha = 0.5
 	)
-	plt.axis('off')
-	plt.colorbar()
+	# plt.axis('off')
+	plt.xlabel("tSNE1")
+	plt.xticks([])
+	plt.ylabel("tSNE2")
+	plt.yticks([])
+	# plt.colorbar()
 	plt.savefig(os.path.join(path, "tsne.png"))
