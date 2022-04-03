@@ -1,41 +1,40 @@
-import sys
+from controller.init.gmmdWindow import Ui_MainWindow
 import os
-
-ROOT_PATH = sys.path[0]
-APP_PACKAGE_PATH = os.path.dirname(os.path.realpath(__file__))
-sys.path.append(APP_PACKAGE_PATH)
-
-from gmmd import compute, estimator, classifier, io, plot
+from gmmd import (
+    compute, 
+    estimator, 
+    classifier, 
+    io, 
+    plot
+)
 import datetime
-import PyQt5
-from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QDialog, QFileDialog, QTextEdit, QTextBrowser, QDialogButtonBox, QVBoxLayout, QLabel, QMessageBox
-from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import Qt, QFile, QTextStream, QThread, pyqtSignal, QObject
+from PyQt5 import QtWidgets
+from PyQt5.QtWidgets import (
+    QApplication, 
+    QMainWindow, 
+    QFileDialog, 
+    QMessageBox, 
+    QMenu, 
+    QAction
+)
+from PyQt5.QtCore import (
+    Qt, 
+    QThread, 
+    QFile, 
+    QTextStream, 
+    pyqtSignal, 
+    QObject
+)
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtWidgets import QMenu, QAction, QListWidgetItem
-from gmmdWindow import Ui_MainWindow
-from classifierWindow import Ui_ClassifierDialog
-from estimatorWindow import Ui_EstimatorDialog
-from htoWindow import Ui_HtoDialog
-from pdfPlotWindow import Ui_PdfPlotDialog
-import matplotlib.pyplot as plt
-import seaborn as sns
-import pandas as pd
-import numpy as np
-import time
-import threading
+from controller import (
+    htoWindow, 
+    classifierWindow, 
+    estimatorWindow, 
+    pdfPlotWindow
+)
+from controller.utils.pandasTable import *
 import tempfile
-from pandasTable import *
 import shutil
-import subprocess
-from functools import reduce
-from app.stylesheet import breeze
-
-def openImage(path):
-    imageViewerFromCommandLine = {'linux':'xdg-open',
-                                  'win32':'explorer',
-                                  'darwin':'open'}[sys.platform]
-    subprocess.run([imageViewerFromCommandLine, path])
 
 class Worker(QObject):
     finished = pyqtSignal()
@@ -53,81 +52,6 @@ class Worker(QObject):
             result = self.f()
         self.finished.emit()
         self.response.emit(result)
-
-class ClassifierWindow(QDialog):
-    def __init__(self, parent=None):
-        super(ClassifierWindow, self).__init__(parent)
-        self.ui = Ui_ClassifierDialog()
-        self.ui.setupUi(self)
-        self.ui.threshold.textChanged.connect(self.thresholdCheck)
-        self.thresholdCorrectStyle = self.ui.threshold.styleSheet()
-        self.ui.threshold_err_label.hide()
-
-    def setList(self, list):
-        for name in list:
-            item = QListWidgetItem(name)
-            item.setFlags(item.flags() | QtCore.Qt.ItemIsUserCheckable)
-            item.setCheckState(QtCore.Qt.Unchecked)
-            self.ui.hto_tags_selection.addItem(item)
-
-    def addHto(self):
-        extract_ary = []
-        for index in range(self.ui.hto_tags_selection.count()):
-            item = self.ui.hto_tags_selection.item(index)
-            if (item.checkState() == QtCore.Qt.Checked):
-                extract_ary.append(item.text())
-        if (extract_ary):
-            extract_ary_str = reduce((lambda a, b: f"{a}+{b}"), extract_ary)
-            item = QListWidgetItem(extract_ary_str)
-            self.ui.hto_tags.addItem(item)
-
-    def removeHto(self):
-        pos = self.ui.hto_tags.currentRow()
-        dump = self.ui.hto_tags.takeItem(pos)
-        del dump
-
-    def thresholdCheck(self):
-        threshold = self.ui.threshold.toPlainText()
-        try:
-            threshold = float(threshold)
-        except:
-            self.thresholdError()
-            return
-
-        if (threshold > 1 or threshold < 0):
-            self.thresholdError()
-            return
-
-        self.thresholdCorrect()
-
-    def thresholdError(self):
-        self.ui.threshold.setStyleSheet("border-color: red;")
-        self.ui.threshold_err_label.show()
-        self.ui.OK.setEnabled(False)
-
-    def thresholdCorrect(self):
-        self.ui.threshold.setStyleSheet(self.thresholdCorrectStyle)
-        self.ui.threshold_err_label.hide()
-        self.ui.OK.setEnabled(True)
-
-class EstimatorWindow(QDialog):
-    def __init__(self, parent=None):
-        super(EstimatorWindow, self).__init__(parent)
-        self.ui = Ui_EstimatorDialog()
-        self.ui.setupUi(self)
-
-class HtoWindow(QDialog):
-    def __init__(self, parent=None):
-        super(HtoWindow, self).__init__(parent)
-        self.ui = Ui_HtoDialog()
-        self.ui.setupUi(self)
-
-class pdfPlotWindow(QDialog):
-    def __init__(self, parent=None, hto_array=None):
-        super(pdfPlotWindow, self).__init__(parent)
-        self.ui = Ui_PdfPlotDialog()
-        self.ui.setupUi(self)
-        self.ui.hto_to_plot.addItems(hto_array)
 
 class MainWindow(QMainWindow):
     tmp_path = os.path.join(tempfile.gettempdir(), ".gmm-demux")
@@ -147,9 +71,10 @@ class MainWindow(QMainWindow):
         self.ui.actionClassify.triggered.connect(self.runClassifier)
         self.ui.actionPDF.triggered.connect(lambda: self.plot(plot_type = "pdf"))
         self.ui.actiontSNE.triggered.connect(lambda: self.plot(plot_type = "tsne"))
-        self.ui.actionSave_MSM_free_results_to.triggered.connect(lambda: self.saveResult(ssd = True))
-        self.ui.actionSave_full_results_to.triggered.connect(lambda: self.saveResult(full = True))
-        self.ui.actionSave_simplified_results_to.triggered.connect(lambda: self.saveResult(full = False))
+        self.ui.actionSave_MSM_free_results_to.triggered.connect(lambda: self.saveResult("ssd"))
+        self.ui.actionSave_full_results_to.triggered.connect(lambda: self.saveResult("full"))
+        self.ui.actionSave_simplified_results_to.triggered.connect(lambda: self.saveResult("simple"))
+        self.ui.actionSave_summary_report.triggered.connect(lambda: self.saveResult("summary"))
         self.ui.actionEstimate.triggered.connect(self.runEstimator)
         self.ui.read.clicked.connect(self.readData)
         self.ui.classify.clicked.connect(self.runClassifier)
@@ -161,8 +86,8 @@ class MainWindow(QMainWindow):
         self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 3, 2, 2)
         self.ui.gridLayout.addWidget(self.ui.tabWidget_console, 2, 0, 2, 4)
         self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
-        self.ui.actionLight.triggered.connect(lambda: changeTheme("light"))
-        self.ui.actionDark.triggered.connect(lambda: changeTheme("dark"))
+        self.ui.actionLight.triggered.connect(lambda: self.changeTheme("light"))
+        self.ui.actionDark.triggered.connect(lambda: self.changeTheme("dark"))
         self.ui.statusbar.showMessage("Ready")
         self.ui.perSampleTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.ui.perSampleTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
@@ -174,7 +99,7 @@ class MainWindow(QMainWindow):
         self.show()
         # print(self.ui.frame_plot.size())
 
-    def asyncFunc(self, func, args = None, after = None):
+    def syncFun(self, func, args = None, callback = None):
         self.thread = QThread(self)
         self.worker = Worker(f = func, args = args)
         self.worker.moveToThread(self.thread)
@@ -183,8 +108,8 @@ class MainWindow(QMainWindow):
         self.worker.finished.connect(self.worker.deleteLater)
         self.thread.finished.connect(self.thread.deleteLater)
         self.thread.start()
-        if (after):
-            self.thread.finished.connect(after)
+        if (callback):
+            self.thread.finished.connect(callback)
 
     def outputSummary(self):
         summary_path = QFileDialog.getOpenFileName(self, "Open a file", "", "All Files (*.*)")
@@ -212,7 +137,7 @@ class MainWindow(QMainWindow):
             if (input_mode == "mtx" or (not input_mode)):
                 self.full_df, self.GMM_df = io.read_cellranger(input_path, hto_array)
             elif (input_mode == "csv"):
-                self.full_df, self.GMM_df = io.read_csv(input_path, hto_array)
+                self.full_df, self.GMM_df = io.read_csv(input_path[0], hto_array)
             elif (input_mode == "full"):
                 self.GMM_full_df, self.sample_num, self.class_name_ary, self.sample_names, self.confidence_threshold = classifier.read_full_classify_result(input_path)
                 self.GEM_num = self.GMM_full_df.shape[0]
@@ -228,14 +153,14 @@ class MainWindow(QMainWindow):
 
         def readDataWorker(input_mode, input_path):
             dlg = self.openDialog(text = "Reading data...")
-            self.asyncFunc(
+            self.syncFun(
                 func = readDataHelper, 
                 args = [
                     input_mode,
                     input_path, 
                     self.hto_array
                 ],
-                after = (lambda: (
+                callback = (lambda: (
                                         self.ui.tabWidget_console.setCurrentIndex(2),
                                         self.ui.GEM_num.setPlainText(str(self.GEM_num)),
                                         self.ui.sample_num.setPlainText(str(self.sample_num)),
@@ -274,7 +199,7 @@ class MainWindow(QMainWindow):
         elif (not input_mode):
             input_path = r"/run/media/setsunayyw/0D7D06240D7D0624/SJTU/2021-09/研究/GMM-Demux-GUI/example_input/outs/filtered_feature_bc_matrix"
 
-        self.htoWindow = HtoWindow(self)
+        self.htoWindow = htoWindow.HtoWindow(self)
         self.htoWindow.show()
         self.htoWindow.ui.OK.clicked.connect(
             lambda: (
@@ -291,7 +216,7 @@ class MainWindow(QMainWindow):
     def setPdfPlotHto(self):
         self.hto_name = str(self.plotOptionWindow.ui.hto_to_plot.currentText())
 
-    def saveResult(self, full = True, ssd = False):
+    def saveResult(self, save_mode = "full"):
         def ssdSaveHelper(output_path):
             io.store_cellranger(self.full_df, self.SSD_idx, output_path)
 
@@ -299,19 +224,19 @@ class MainWindow(QMainWindow):
         if (output_path == ('')):
             return
         dlg = self.openDialog(text = "Saving...")
-        if (ssd):
-            self.asyncFunc(
+        if (save_mode == "ssd"):
+            self.syncFun(
                 func = ssdSaveHelper,
                 args = [
                     output_path
                 ],
-                after = lambda: (
+                callback = lambda: (
                         dlg.setText("Done."),
                         dlg.setStandardButtons(QMessageBox.Ok)
                     )
             )
-        elif (full):
-            self.asyncFunc(
+        elif (save_mode == "full"):
+            self.syncFun(
                 func = classifier.store_full_classify_result,
                 args = [
                     self.GMM_full_df,
@@ -319,13 +244,13 @@ class MainWindow(QMainWindow):
                     self.confidence_threshold,
                     output_path
                 ],
-                after = lambda: (
+                callback = lambda: (
                         dlg.setText("Done."),
                         dlg.setStandardButtons(QMessageBox.Ok)
                     )
             )
-        else:
-            self.asyncFunc(
+        elif (save_mode == "simple"):
+            self.syncFun(
                 func = classifier.store_simplified_classify_result,
                 args = [
                     self.GMM_full_df,
@@ -334,8 +259,22 @@ class MainWindow(QMainWindow):
                     self.sample_num,
                     self.confidence_threshold
                 ],
-                after = lambda: (
+                callback = lambda: (
                         dlg.setText("Done."),
+                        dlg.setStandardButtons(QMessageBox.Ok)
+                    )
+            )
+        elif (save_mode == "summary"):
+            summary_report_path = os.path.join(output_path, 'GMM_summary_report.txt')
+            self.syncFun(
+                func = estimator.store_summary_result,
+                args = [
+                    summary_report_path,
+                    self.estimate_result[0],
+                    self.estimate_result[1]
+                ],
+                callback = lambda: (
+                        dlg.setText(f"Summary report is stored in {summary_report_path}."),
                         dlg.setStandardButtons(QMessageBox.Ok)
                     )
             )
@@ -355,16 +294,16 @@ class MainWindow(QMainWindow):
 
         def pdfPlotWorker():
             dlg = self.openDialog(text = "Plotting PDF, it may take a few seconds...")
-            self.asyncFunc(
+            self.syncFun(
                 func = pdfPlotHelper,
-                after = lambda: (
+                callback = lambda: (
                     dlg.setText("Done."),
                     dlg.setStandardButtons(QMessageBox.Ok)
                 )
             )
 
         if (plot_type == "pdf"):
-            self.plotOptionWindow = pdfPlotWindow(self, hto_array = self.hto_array)
+            self.plotOptionWindow = pdfPlotWindow.pdfPlotWindow(self, hto_array = self.hto_array)
             self.plotOptionWindow.show()
             self.plotOptionWindow.ui.OK.clicked.connect(
                 lambda: (
@@ -375,9 +314,9 @@ class MainWindow(QMainWindow):
             )
         elif (plot_type == "tsne"):
             dlg = self.openDialog(text = "Plotting tSNE, it may take a few minutes...")
-            self.asyncFunc(
+            self.syncFun(
                 func = plotHelper,
-                after = lambda: (
+                callback = lambda: (
                     self.ui.label_plot.setPixmap(
                         QPixmap(os.path.join(self.tmp_path, "tsne.png")).scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
                     ),
@@ -391,7 +330,7 @@ class MainWindow(QMainWindow):
         save_plot_action = QAction("Save plot as png", self)
         view_plot_action = QAction("Open with system viewer", self)
         save_plot_action.triggered.connect(self.savePlot)
-        view_plot_action.triggered.connect(lambda: openImage(os.path.join(self.tmp_path, self.plot_file_name)))
+        view_plot_action.triggered.connect(lambda: plot.openImage(os.path.join(self.tmp_path, self.plot_file_name)))
         menu.addAction(view_plot_action)
         menu.addAction(save_plot_action)
         menu.exec_(self.ui.label_plot.mapToGlobal(point))
@@ -443,6 +382,9 @@ class MainWindow(QMainWindow):
 
     def setSummary(self):
         total_num = self.estimatorWindow.ui.estimated_total_cell_num.toPlainText()
+        self.examine_cell_path = self.estimatorWindow.ui.examine_cell_path.toPlainText()
+        self.ambiguous_rate = self.estimatorWindow.ui.ambiguous_rate.toPlainText()
+        self.ambiguous_rate = float(self.ambiguous_rate)
         try:
             self.estimated_total_cell_num = int(total_num)
         except:
@@ -493,9 +435,9 @@ class MainWindow(QMainWindow):
             # return
 
             dlg = self.openDialog(text = "Running classifier...")
-            self.asyncFunc(
+            self.syncFun(
                 func = runClassifierHelper, 
-                after = lambda: (
+                callback = lambda: (
                         self.ui.tabWidget_console.setCurrentIndex(2),
                         # self.ui.classificationTable.setModel(pandasModel(self.GMM_full_df)),
                         # self.ui.classificationTable.resizeColumnsToContents(),
@@ -507,12 +449,12 @@ class MainWindow(QMainWindow):
                         self.ui.actionSave_simplified_results_to.setEnabled(True),
                         self.ui.actionPDF.setEnabled(True),
                         self.ui.actiontSNE.setEnabled(True),
-                        self.ui.actionEstimate.setEnabled(True),
-                        self.ui.estimate.setEnabled(True)
+                        self.ui.actionEstimate.setEnabled(True if (not self.extract_id_ary) else False),
+                        self.ui.estimate.setEnabled(True if (not self.extract_id_ary) else False)
                     )
             )
 
-        self.classifierWindow = ClassifierWindow(self)
+        self.classifierWindow = classifierWindow.ClassifierWindow(self)
         self.classifierWindow.show()
         self.classifierWindow.setList(self.hto_array)
         self.classifierWindow.ui.add.clicked.connect(self.classifierWindow.addHto)
@@ -528,7 +470,7 @@ class MainWindow(QMainWindow):
 
     def runEstimator(self):
         def runEstimatorHelper():
-            result = estimator.estimator(
+            estimate_result = estimator.estimator(
                 self.GMM_full_df,
                 self.purified_df,
                 self.sample_num,
@@ -536,9 +478,12 @@ class MainWindow(QMainWindow):
                 self.confidence_threshold,
                 self.estimated_total_cell_num,
                 self.SSD_idx,
-                self.sample_names
+                self.sample_names,
+                self.examine_cell_path,
+                self.ambiguous_rate,
+                self.class_name_ary
             )
-            self.estimateResult = result
+            self.estimate_result = estimate_result
 
         def setEstimationResult(full_report_dict):
             for (key, value) in full_report_dict.items():
@@ -548,31 +493,39 @@ class MainWindow(QMainWindow):
                     getattr(self.ui, key).setPlainText(str(value))
 
         def afterEstimator(dlg):
-            if (isinstance(self.estimateResult, int)):
+            if (isinstance(self.estimate_result, int)):
                 dlg.setText(
-                "GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated." 
+                    "GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated." 
                 )
                 dlg.setStandardButtons(QMessageBox.Ok)
                 return
             self.ui.tabWidget_console.setCurrentIndex(3)
-            setEstimationResult(self.estimateResult[0])
-            self.ui.perSampleTable.setTableWidget(self.estimateResult[1])
-            # self.ui.perSampleTable.setModel(pandasModel(self.estimateResult[1]))
+            setEstimationResult(self.estimate_result[2])
+            self.ui.perSampleTable.setTableWidget(self.estimate_result[1])
+            # self.ui.perSampleTable.setModel(pandasModel(self.estimate_result[1]))
             self.ui.perSampleTable.resizeColumnsToContents()
             self.ui.perSampleTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.ui.perSampleTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
+            GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type = self.estimate_result[3]
+            self.ui.ambiguous_rate.setPlainText(str(self.ambiguous_rate))
+            self.ui.GEM_num_ex.setPlainText(str(GEM_num))
+            self.ui.MSM_num_ex.setPlainText(str(MSM_num))
+            self.ui.phony_p_value.setPlainText(f"{phony_test_pvalue:.2e}")
+            self.ui.pure_p_value.setPlainText(f"{pure_test_pvalue:.2e}")
+            self.ui.cluster_type.setPlainText(cluster_type)
             dlg.setText(
                 "Done."
             )
             dlg.setStandardButtons(QMessageBox.Ok)
+            self.ui.actionSave_summary_report.setEnabled(True)
         def runEstimatorWorker():
             dlg = self.openDialog(text = "Running estimator...")
-            self.asyncFunc(
+            self.syncFun(
                 func = runEstimatorHelper,
-                after = (lambda: afterEstimator(dlg))
+                callback = (lambda: afterEstimator(dlg))
             )
 
-        self.estimatorWindow = EstimatorWindow(self)
+        self.estimatorWindow = estimatorWindow.EstimatorWindow(self)
         self.estimatorWindow.show()
         self.estimatorWindow.ui.OK.clicked.connect(
             lambda: (
@@ -581,29 +534,9 @@ class MainWindow(QMainWindow):
                 runEstimatorWorker()
             )
         )
-        
 
-def changeTheme(theme_type):
-    file = QFile(f":/{theme_type}/stylesheet.qss")
-    file.open(QFile.ReadOnly | QFile.Text)
-    stream = QTextStream(file)
-    QApplication.instance().setStyleSheet(stream.readAll())
-
-
-def main():
-    dirname = os.path.dirname(PyQt5.__file__)
-    plugin_path = os.path.join(dirname, 'Qt5', 'plugins', 'platforms')
-    os.environ['QT_QPA_PLATFORM_PLUGIN_PATH'] = plugin_path
-    app = QApplication(sys.argv)
-    # app.setStyle('Windows')
-    # app.setStyleSheet(qdarkstyle.load_stylesheet())
-    # print(QtWidgets.QStyleFactory.keys())
-    file = QFile(":/dark/stylesheet.qss")
-    file.open(QFile.ReadOnly | QFile.Text)
-    stream = QTextStream(file)
-    app.setStyleSheet(stream.readAll())
-    width = app.primaryScreen().size().width()
-    # print(width)
-    mainWindow = MainWindow()
-    # mainWindow.showMaximized()
-    sys.exit(app.exec_())
+    def changeTheme(self, theme_type):
+        file = QFile(f":/{theme_type}/stylesheet.qss")
+        file.open(QFile.ReadOnly | QFile.Text)
+        stream = QTextStream(file)
+        QApplication.instance().setStyleSheet(stream.readAll())

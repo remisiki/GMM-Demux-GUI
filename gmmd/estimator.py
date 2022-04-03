@@ -6,6 +6,8 @@ from scipy.stats import binom_test
 from scipy.special import comb
 import traceback
 import pandas as pd
+from tabulate import tabulate
+import os
 
 def compute_multiplet_rates_asymp(cell_num, sample_num, drop_num):
     no_drop_rate = (1 - 1 / drop_num)
@@ -274,8 +276,7 @@ def test_pure_hypothesis(cluster_MSM_num, drop_num, cluster_GEM_num, cell_num_ar
 
     """
     MSM_rate = pure_cluster_MSM_rate(drop_num, cluster_GEM_num, cell_num_ary, capture_rate, ambiguous_rate)
-    # print("Estimated MSM rate: ", MSM_rate)
-    return MSM_rate, binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")
+    return binom_test(cluster_MSM_num / capture_rate, cluster_GEM_num / capture_rate, MSM_rate, "greater")
 
 
 ####Debuging Functions####
@@ -349,7 +350,7 @@ def compute_observation_probability(drop_num, capture_rate, cell_num_ary, HTO_GE
     return log_probability
 
 
-def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_threshold, estimated_total_cell_num, SSD_idx, sample_names):
+def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_threshold, estimated_total_cell_num, SSD_idx, sample_names, examine_cell_path = None, ambiguous_rate = 0.05, class_name_ary = None):
     negative_num, unclear_num = classifier.count_bad_droplets(GMM_full_df, confidence_threshold)
     HTO_GEM_ary = compute.obtain_HTO_GEM_num(purified_df, base_bv_array)
     params0 = [80000, 0.5]
@@ -389,19 +390,19 @@ def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_th
             "unclear_rate": "%5.2f" % (unclear_num / GMM_full_df.shape[0] * 100)
             }
 
-    # full_report_columns = [
-    #         "#Drops",
-    #         "Capture rate",
-    #         "#Cells",
-    #         "Singlet",
-    #         "MSM",
-    #         "SSM",
-    #         "RSSM",
-    #         "Negative",
-    #         "Unclear"
-    #         ]
+    full_report_columns = [
+            "#Drops",
+            "Capture rate",
+            "#Cells",
+            "Singlet",
+            "MSM",
+            "SSM",
+            # "RSSM",
+            "Negative",
+            "Unclear"
+            ]
 
-    # full_report_df = pd.DataFrame(full_report_dict, index = ["Total"], columns=full_report_columns)
+    full_report_df = pd.DataFrame([full_report_dict.values()], index = ["Total"], columns=full_report_columns)
 
     sample_df = pd.DataFrame(data=[
             ["%d" % num for num in rounded_cell_num_ary],
@@ -410,4 +411,45 @@ def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_th
             ],
             columns = sample_names, index = ["Cell count", "SSD count", "Relative SSM rate"])
 
-    return full_report_dict, sample_df
+    if (examine_cell_path):
+        examine_result = examine_cluster_type(ambiguous_rate, sample_num, drop_num, capture_rate, rounded_cell_num_ary, purified_df, class_name_ary, confidence_threshold, examine_cell_path)
+    else:
+        examine_result = None
+
+    return full_report_df, sample_df, full_report_dict, examine_result
+
+def store_summary_result(path, full_report_df, sample_df):
+    with open(path, "w") as f:
+        f.write("==============================Full Report==============================\n")
+    with open(path, "a") as f:
+        f.write(tabulate(full_report_df, headers='keys', tablefmt='psql'))
+    with open(path, "a") as f:
+        f.write("\n\n")
+        f.write("==============================Per Sample Report==============================\n")
+    with open(path, "a") as f:
+        f.write(tabulate(sample_df, headers='keys', tablefmt='psql'))
+
+def examine_cluster_type(ambiguous_rate, sample_num, drop_num, capture_rate, rounded_cell_num_ary, purified_df, class_name_ary, confidence_threshold, cell_list_path):
+
+    simplified_df = classifier.store_simplified_classify_result(purified_df, class_name_ary, None, sample_num, confidence_threshold)
+
+    cell_list = [line.rstrip('\n') for line in open(cell_list_path)]
+    cell_list = list(set(cell_list).intersection(simplified_df.index.tolist()))
+
+    MSM_list = classifier.obtain_MSM_list(simplified_df, sample_num, cell_list)
+
+    GEM_num = len(cell_list)
+    MSM_num = len(MSM_list)
+
+    phony_test_pvalue = test_phony_hypothesis(MSM_num, GEM_num, rounded_cell_num_ary, capture_rate)
+    pure_test_pvalue = test_pure_hypothesis(MSM_num, drop_num, GEM_num, rounded_cell_num_ary, capture_rate, ambiguous_rate)
+    # print(pure_test_pvalue)
+
+    if phony_test_pvalue < 0.01 and pure_test_pvalue > 0.01:
+        cluster_type = "pure"
+    elif pure_test_pvalue < 0.01 and phony_test_pvalue > 0.01:
+        cluster_type = "phony"
+    else:
+        cluster_type = "unclear"
+
+    return GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type

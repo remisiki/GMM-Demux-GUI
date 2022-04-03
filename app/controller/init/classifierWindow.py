@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-# Form implementation generated from reading ui file 'classifier.ui'
+# Form implementation generated from reading ui file './app/xml/classifier.ui'
 #
 # Created by: PyQt5 UI code generator 5.15.4
 #
@@ -68,7 +68,7 @@ class Ui_ClassifierDialog(object):
         self.remove.setObjectName("remove")
         self.threshold_err_label = QtWidgets.QLabel(ClassifierDialog)
         self.threshold_err_label.setEnabled(True)
-        self.threshold_err_label.setGeometry(QtCore.QRect(140, 50, 301, 21))
+        self.threshold_err_label.setGeometry(QtCore.QRect(10, 50, 301, 21))
         font = QtGui.QFont()
         font.setPointSize(8)
         self.threshold_err_label.setFont(font)

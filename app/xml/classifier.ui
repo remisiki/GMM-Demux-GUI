@@ -175,7 +175,7 @@ If you want to run SSM rate estimator, please skip this.</string>
    </property>
    <property name="geometry">
     <rect>
-     <x>140</x>
+     <x>10</x>
      <y>50</y>
      <width>301</width>
      <height>21</height>

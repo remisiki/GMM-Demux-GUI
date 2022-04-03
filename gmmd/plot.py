@@ -1,7 +1,9 @@
+import sys
 import os
 import tempfile
 import matplotlib.pyplot as plt
 from sklearn.manifold import TSNE
+import subprocess
 
 def tsne_plot(data, classification, path = None):
 	if (not path):
@@ -29,3 +31,10 @@ def tsne_plot(data, classification, path = None):
 	plt.yticks([])
 	# plt.colorbar()
 	plt.savefig(os.path.join(path, "tsne.png"))
+
+
+def openImage(path):
+    imageViewerFromCommandLine = {'linux':'xdg-open',
+                                  'win32':'explorer',
+                                  'darwin':'open'}[sys.platform]
+    subprocess.run([imageViewerFromCommandLine, path])
