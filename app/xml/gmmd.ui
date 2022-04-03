@@ -828,26 +828,6 @@
       <property name="currentIndex">
        <number>0</number>
       </property>
-      <widget class="QWidget" name="tab_11">
-       <attribute name="title">
-        <string>Console</string>
-       </attribute>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="QTextBrowser" name="console">
-          <property name="horizontalScrollBarPolicy">
-           <enum>Qt::ScrollBarAlwaysOff</enum>
-          </property>
-          <property name="documentTitle">
-           <string/>
-          </property>
-          <property name="lineWrapMode">
-           <enum>QTextEdit::WidgetWidth</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
       <widget class="QWidget" name="tab_7">
        <attribute name="title">
         <string>GEM Data</string>

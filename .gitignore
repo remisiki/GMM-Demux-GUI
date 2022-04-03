@@ -10,3 +10,4 @@ archieve/
 *generated*
 tmp*
 env
+*.log

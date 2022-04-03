@@ -1,4 +1,5 @@
-import app.index as index
+import json
+import app.index
 
 if __name__ == "__main__":
-    index.main()
+    app.index.main()
