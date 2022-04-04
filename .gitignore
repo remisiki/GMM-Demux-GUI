@@ -11,3 +11,6 @@ archieve/
 tmp*
 env
 *.log
+build/
+dist*
+gmmd.zip
