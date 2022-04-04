@@ -336,7 +336,8 @@ class MainWindow(QMainWindow):
                 args = [
                     summary_report_path,
                     self.__estimate_result[0],
-                    self.__estimate_result[1]
+                    self.__estimate_result[1],
+                    self.__estimate_result[3]
                 ],
                 callback = lambda e: saveCallback(e, dlg, f"Summary report stored to {summary_report_path}.")
             )

@@ -418,7 +418,7 @@ def estimator(GMM_full_df, purified_df, sample_num, base_bv_array, confidence_th
 
     return full_report_df, sample_df, full_report_dict, examine_result
 
-def store_summary_result(path, full_report_df, sample_df):
+def store_summary_result(path, full_report_df, sample_df, examine_result):
     with open(path, "w") as f:
         f.write("==============================Full Report==============================\n")
     with open(path, "a") as f:
@@ -428,6 +428,22 @@ def store_summary_result(path, full_report_df, sample_df):
         f.write("==============================Per Sample Report==============================\n")
     with open(path, "a") as f:
         f.write(tabulate(sample_df, headers='keys', tablefmt='psql'))
+    if (examine_result):
+        with open(path, "a") as f:
+            f.write("\n\n")
+            f.write("==============================Examine Report==============================\n")
+        examine_df = pd.DataFrame(
+            data = [examine_result],
+            index = [""],
+            columns = [
+                "#GEM",
+                "#MSM",
+                "Phony test P-value",
+                "Pure test P-value",
+                "Cluster type"
+            ])
+        with open(path, "a") as f:
+            f.write(tabulate(examine_df, headers='keys', tablefmt='psql'))
 
 def examine_cluster_type(ambiguous_rate, sample_num, drop_num, capture_rate, rounded_cell_num_ary, purified_df, class_name_ary, confidence_threshold, cell_list_path):
 
