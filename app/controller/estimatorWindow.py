@@ -1,4 +1,4 @@
-from controller.init.estimatorWindow import Ui_EstimatorDialog
+from app.controller.init.estimatorWindow import Ui_EstimatorDialog
 from PyQt5.QtWidgets import QDialog, QFileDialog
 
 class EstimatorWindow(QDialog):

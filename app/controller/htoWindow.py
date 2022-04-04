@@ -1,4 +1,4 @@
-from controller.init.htoWindow import Ui_HtoDialog
+from app.controller.init.htoWindow import Ui_HtoDialog
 from PyQt5.QtWidgets import QDialog
 
 class HtoWindow(QDialog):

@@ -9,7 +9,7 @@ sys.path.append(APP_PACKAGE_PATH)
 import PyQt5
 from PyQt5.QtWidgets import QApplication
 from PyQt5.QtCore import QFile, QTextStream
-from controller import mainWindow
+from app.controller import mainWindow
 from app.stylesheet import breeze
 from logging import getLogger
 logger = getLogger(__name__)

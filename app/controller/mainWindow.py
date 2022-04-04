@@ -1,4 +1,4 @@
-from controller.init.gmmdWindow import Ui_MainWindow
+from app.controller.init.gmmdWindow import Ui_MainWindow
 import os
 from gmmd import (
     compute, 
@@ -26,17 +26,16 @@ from PyQt5.QtCore import (
     QObject
 )
 from PyQt5.QtGui import QPixmap
-from controller import (
+from app.controller import (
     htoWindow, 
     classifierWindow, 
     estimatorWindow, 
     pdfPlotWindow
 )
-from controller.utils.pandasTable import *
+from app.controller.utils.pandasTable import *
 import tempfile
 import shutil
 from logging import getLogger
-import app.logger
 import traceback
 
 class Worker(QObject):
@@ -60,7 +59,7 @@ class Worker(QObject):
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         self.__tmp_path = os.path.join(tempfile.gettempdir(), ".gmm-demux")
-        self.__logger = getLogger("app").getChild(f"{__name__}.{__class__.__name__}")
+        self.__logger = getLogger(__name__)
         self.__full_df = pd.DataFrame()
         self.__GMM_df = pd.DataFrame()
         self.__GMM_full_df = pd.DataFrame()

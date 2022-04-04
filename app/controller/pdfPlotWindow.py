@@ -1,4 +1,4 @@
-from controller.init.pdfPlotWindow import Ui_PdfPlotDialog
+from app.controller.init.pdfPlotWindow import Ui_PdfPlotDialog
 from PyQt5.QtWidgets import QDialog
 
 class pdfPlotWindow(QDialog):

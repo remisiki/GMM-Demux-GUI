@@ -1,4 +1,4 @@
-from controller.init.classifierWindow import Ui_ClassifierDialog
+from app.controller.init.classifierWindow import Ui_ClassifierDialog
 from PyQt5 import QtCore
 from PyQt5.QtWidgets import QDialog, QListWidgetItem
 from functools import reduce
