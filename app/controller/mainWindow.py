@@ -364,7 +364,7 @@ class MainWindow(QMainWindow):
     def plot(self, plot_type):
         def plotHelper():
             self.__plot_file_name = "tsne.png"
-            plot.tsne_plot(self.__GMM_df, self.__GMM_full_df)
+            plot.tsne_plot(self.__GMM_df, self.__GMM_full_df, self.__class_name_ary)
 
         def pdfPlotHelper():
             self.__plot_file_name = f"pdf_{self.__hto_name}.png"

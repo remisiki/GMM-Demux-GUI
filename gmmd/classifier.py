@@ -9,6 +9,7 @@ from math import log2
 
 from gmmd import multi
 from gmmd import compute
+from gmmd import plot
 
 import matplotlib
 matplotlib.use('Agg')
@@ -42,14 +43,7 @@ def obtain_arrays(data, path = None):
         pdf_individual = responsibilities * pdf[:, np.newaxis]
 
         # Plot probabilities distribution
-        if (not path):
-            path = "/tmp/.gmm-demux/"
-        if (not os.path.exists(path)):
-            os.makedirs(path)
-        # print(len(pdf_individual))
-        plt.clf()
-        plt.plot(x, pdf_individual)
-        plt.savefig(os.path.join(path, f"pdf_{hto_array[i]}.png"))
+        plot.pdfPlot(x, pdf_individual, hto_array[i])
 
         # print(gmm[-1].means_)
 
