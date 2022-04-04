@@ -9,7 +9,7 @@ class ClassifierWindow(QDialog):
         self.ui = Ui_ClassifierDialog()
         self.ui.setupUi(self)
         self.ui.threshold.textChanged.connect(self.thresholdCheck)
-        self.thresholdCorrectStyle = self.ui.threshold.styleSheet()
+        self.threshold_correct_style = self.ui.threshold.styleSheet()
         self.ui.threshold_err_label.hide()
 
     def setList(self, list):
@@ -55,6 +55,6 @@ class ClassifierWindow(QDialog):
         self.ui.OK.setEnabled(False)
 
     def thresholdCorrect(self):
-        self.ui.threshold.setStyleSheet(self.thresholdCorrectStyle)
+        self.ui.threshold.setStyleSheet(self.threshold_correct_style)
         self.ui.threshold_err_label.hide()
         self.ui.OK.setEnabled(True)

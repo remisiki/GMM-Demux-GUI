@@ -8,8 +8,11 @@ class EstimatorWindow(QDialog):
         self.ui.setupUi(self)
         self.ui.open_examine_path.clicked.connect(self.setExamineCellPath)
         self.ui.ambiguous_rate.textChanged.connect(self.ambiguousCheck)
-        self.ambiguousCorrectStyle = self.ui.ambiguous_rate.styleSheet()
+        self.ui.estimated_total_cell_num.textChanged.connect(self.estimateNumCheck)
+        self.ambiguous_correct_style = self.ui.ambiguous_rate.styleSheet()
         self.ui.ambiguous_rate_err_label.hide()
+        self.estimate_num_correct_style = self.ui.estimate_num_err_label.styleSheet()
+        self.ui.estimate_num_err_label.hide()
 
     def setExamineCellPath(self):
         input_path = QFileDialog.getOpenFileName(self, "Open a text file", "", "*.txt")
@@ -37,6 +40,30 @@ class EstimatorWindow(QDialog):
         self.ui.OK.setEnabled(False)
 
     def ambiguousCorrect(self):
-        self.ui.ambiguous_rate.setStyleSheet(self.ambiguousCorrectStyle)
+        self.ui.ambiguous_rate.setStyleSheet(self.ambiguous_correct_style)
         self.ui.ambiguous_rate_err_label.hide()
+        self.ui.OK.setEnabled(True)
+
+    def estimateNumCheck(self):
+        estimated_total_cell_num = self.ui.estimated_total_cell_num.toPlainText()
+        try:
+            estimated_total_cell_num = int(estimated_total_cell_num)
+        except:
+            self.estimateNumError()
+            return
+
+        if (estimated_total_cell_num <= 0):
+            self.estimateNumError()
+            return
+
+        self.estimateNumCorrect()
+
+    def estimateNumError(self):
+        self.ui.estimated_total_cell_num.setStyleSheet("border-color: red;")
+        self.ui.estimate_num_err_label.show()
+        self.ui.OK.setEnabled(False)
+
+    def estimateNumCorrect(self):
+        self.ui.estimated_total_cell_num.setStyleSheet(self.estimate_num_correct_style)
+        self.ui.estimate_num_err_label.hide()
         self.ui.OK.setEnabled(True)

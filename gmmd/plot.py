@@ -15,6 +15,7 @@ def tsne_plot(data, classification, path = None):
 	if (not os.path.exists(path)):
 		logger.info(f"Temp path not found, {path} created.")
 		os.makedirs(path)
+	return
 	y = classification["Cluster_id"]
 	y[y >= 5] = 5
 	tsne = TSNE(n_components = 2, random_state = 0)

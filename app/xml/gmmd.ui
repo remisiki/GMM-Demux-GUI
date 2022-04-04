@@ -821,7 +821,10 @@
      </widget>
     </item>
     <item row="1" column="0">
-     <widget class="QTabWidget" name="tabWidget_console">
+     <widget class="QTabWidget" name="result_tab">
+      <property name="contextMenuPolicy">
+       <enum>Qt::CustomContextMenu</enum>
+      </property>
       <property name="tabPosition">
        <enum>QTabWidget::North</enum>
       </property>

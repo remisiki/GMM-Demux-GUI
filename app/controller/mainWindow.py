@@ -41,8 +41,6 @@ import traceback
 
 class Worker(QObject):
     finished = pyqtSignal(object)
-    response = pyqtSignal(object)
-    error = pyqtSignal(object)
 
     def __init__(self, f, args = None, parent = None):
         QThread.__init__(self, parent)
@@ -56,19 +54,35 @@ class Worker(QObject):
             else:
                 result = self.f()
             self.finished.emit(None)
-            self.response.emit(result)
         except Exception:
             self.finished.emit(traceback.format_exc())
 
 class MainWindow(QMainWindow):
-    tmp_path = os.path.join(tempfile.gettempdir(), ".gmm-demux")
-    full_df = None
-    GMM_df = None
     def __init__(self, parent=None):
-        self.logger = getLogger("app").getChild(f"{__name__}.{__class__.__name__}")
-        if (not os.path.exists(self.tmp_path)):
-            os.makedirs(self.tmp_path)
-            self.logger.info(f"Temp path not found, {self.tmp_path} created.")
+        self.__tmp_path = os.path.join(tempfile.gettempdir(), ".gmm-demux")
+        self.__logger = getLogger("app").getChild(f"{__name__}.{__class__.__name__}")
+        self.__full_df = pd.DataFrame()
+        self.__GMM_df = pd.DataFrame()
+        self.__GMM_full_df = pd.DataFrame()
+        self.__purified_df = pd.DataFrame()
+        self.__hto_ary = None
+        self.__sample_num = None
+        self.__class_name_ary = None
+        self.__sample_names = None
+        self.__confidence_threshold = None
+        self.__GEM_num = None
+        self.__base_bv_ary = None
+        self.__SSD_idx = None
+        self.__hto_name = None
+        self.__estimate_result = None
+        self.__plot_file_name = None
+        self.__examine_cell_path = None
+        self.__ambiguous_rate = None
+        self.__estimated_total_cell_num = None
+        self.__extract_id_ary = None
+        if (not os.path.exists(self.__tmp_path)):
+            os.makedirs(self.__tmp_path)
+            self.__logger.info(f"Temp path not found, {self.__tmp_path} created.")
         super(MainWindow, self).__init__(parent)
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
@@ -87,12 +101,12 @@ class MainWindow(QMainWindow):
         self.ui.read.clicked.connect(self.readData)
         self.ui.classify.clicked.connect(self.runClassifier)
         self.ui.estimate.clicked.connect(self.runEstimator)
-        # self.ui.plot.clicked.connect(self.plot)
+        self.ui.plot.clicked.connect(lambda: self.plot(plot_type = "tsne"))
         self.ui.exit.clicked.connect(self.close)
         self.ui.actionExit.triggered.connect(self.close)
         self.ui.gridLayout.addWidget(self.ui.frame_control, 0, 0, 2, 3)
         self.ui.gridLayout.addWidget(self.ui.frame_plot, 0, 3, 2, 2)
-        self.ui.gridLayout.addWidget(self.ui.tabWidget_console, 2, 0, 2, 4)
+        self.ui.gridLayout.addWidget(self.ui.result_tab, 2, 0, 2, 4)
         self.ui.gridLayout.addWidget(self.ui.frame_buttons, 2, 4, 2, 1)
         self.ui.actionLight.triggered.connect(lambda: self.changeTheme("light"))
         self.ui.actionDark.triggered.connect(lambda: self.changeTheme("dark"))
@@ -101,9 +115,10 @@ class MainWindow(QMainWindow):
         self.ui.perSampleTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
         self.ui.perSampleTable.setVerticalHeaderLabels(["Cell count", "SSD count", "Relative SSM rate"])
         self.ui.label_plot.customContextMenuRequested.connect(self.plotMenu)
-        self.plot_file_name = None
+        self.ui.result_tab.customContextMenuRequested.connect(self.resultMenu)
+        self.__plot_file_name = None
         self.setFocus()
-        self.logger.info("Intializing mainWindow finished.")
+        self.__logger.info("Intializing mainWindow finished.")
         self.show()
 
     def syncFun(self, func, args = None, callback = None):
@@ -119,7 +134,7 @@ class MainWindow(QMainWindow):
             self.worker.finished.connect(lambda e: callback(e))
 
     def errLogger(self, err, dlg = None, title = None, content = None):
-        self.logger.error(err)
+        self.__logger.error(err)
         if (dlg):
             if (title):
                 dlg.setWindowTitle(title)
@@ -132,7 +147,7 @@ class MainWindow(QMainWindow):
             dlg.setStandardButtons(QMessageBox.Ok)
 
     def warnLogger(self, warning, dlg = None, title = None, content = None):
-        self.logger.warning(warning)
+        self.__logger.warning(warning)
         if (dlg):
             if (title):
                 dlg.setWindowTitle(title)
@@ -163,26 +178,26 @@ class MainWindow(QMainWindow):
         return dlg
 
     def setHtoArray(self):
-        self.hto_array = self.htoWindow.ui.hto_array.toPlainText().split(',')
+        self.__hto_ary = self.htoWindow.ui.hto_array.toPlainText().split(',')
 
     def readData(self, input_mode = None):
         def readDataHelper(input_mode, input_path, hto_array = None):
             if (input_mode == "mtx" or (not input_mode)):
-                self.full_df, self.GMM_df = io.read_cellranger(input_path, hto_array)
+                self.__full_df, self.__GMM_df = io.read_cellranger(input_path, hto_array)
             elif (input_mode == "csv"):
-                self.full_df, self.GMM_df = io.read_csv(input_path[0], hto_array)
+                self.__full_df, self.__GMM_df = io.read_csv(input_path[0], hto_array)
             elif (input_mode == "full"):
-                self.GMM_full_df, self.sample_num, self.class_name_ary, self.sample_names, self.confidence_threshold = classifier.read_full_classify_result(input_path)
-                self.GEM_num = self.GMM_full_df.shape[0]
-                self.base_bv_array = compute.obtain_base_bv_array(self.sample_num)
-                self.purified_df = classifier.purify_droplets(self.GMM_full_df, self.confidence_threshold)
-                self.SSD_idx = classifier.obtain_SSD_list(self.purified_df, self.sample_num)
+                self.__GMM_full_df, self.__sample_num, self.__class_name_ary, self.__sample_names, self.__confidence_threshold = classifier.read_full_classify_result(input_path)
+                self.__GEM_num = self.__GMM_full_df.shape[0]
+                self.__base_bv_ary = compute.obtain_base_bv_array(self.__sample_num)
+                self.__purified_df = classifier.purify_droplets(self.__GMM_full_df, self.__confidence_threshold)
+                self.__SSD_idx = classifier.obtain_SSD_list(self.__purified_df, self.__sample_num)
                 return
 
-            self.GEM_num = self.GMM_df.shape[0]
-            self.sample_num = self.GMM_df.shape[1]
-            self.base_bv_array = compute.obtain_base_bv_array(self.sample_num)
-            self.sample_names = self.GMM_df.columns
+            self.__GEM_num = self.__GMM_df.shape[0]
+            self.__sample_num = self.__GMM_df.shape[1]
+            self.__base_bv_ary = compute.obtain_base_bv_array(self.__sample_num)
+            self.__sample_names = self.__GMM_df.columns
 
         def readDataWorker(input_mode, input_path):
             dlg = self.openDialog(text = "Reading data...")
@@ -191,7 +206,7 @@ class MainWindow(QMainWindow):
                 args = [
                     input_mode,
                     input_path, 
-                    self.hto_array
+                    self.__hto_ary
                 ],
                 callback = lambda e: readDataCallback(e, input_mode, dlg)
             )
@@ -201,10 +216,10 @@ class MainWindow(QMainWindow):
                 self.errLogger(err, dlg)
                 return
             if (input_mode == "full"):
-                self.ui.tabWidget_console.setCurrentIndex(1)
-                self.ui.GEM_num.setPlainText(str(self.GEM_num))
-                self.ui.sample_num.setPlainText(str(self.sample_num))
-                self.ui.classificationTable.setTableWidget(self.GMM_full_df)
+                self.ui.result_tab.setCurrentIndex(1)
+                self.ui.GEM_num.setPlainText(str(self.__GEM_num))
+                self.ui.sample_num.setPlainText(str(self.__sample_num))
+                self.ui.classificationTable.setTableWidget(self.__GMM_full_df)
                 dlg.setText("Done.")
                 dlg.setStandardButtons(QMessageBox.Ok)
                 self.ui.actionEstimate.setEnabled(True)
@@ -212,10 +227,10 @@ class MainWindow(QMainWindow):
                 self.ui.actionSave_full_results_to.setEnabled(True)
                 self.ui.actionSave_simplified_results_to.setEnabled(True)
             else:
-                self.ui.tabWidget_console.setCurrentIndex(0)
-                self.ui.GEM_num.setPlainText(str(self.GEM_num))
-                self.ui.sample_num.setPlainText(str(self.sample_num))
-                self.ui.dataTable.setTableWidget(self.full_df)
+                self.ui.result_tab.setCurrentIndex(0)
+                self.ui.GEM_num.setPlainText(str(self.__GEM_num))
+                self.ui.sample_num.setPlainText(str(self.__sample_num))
+                self.ui.dataTable.setTableWidget(self.__full_df)
                 dlg.setText("Done.")
                 dlg.setStandardButtons(QMessageBox.Ok)
                 self.ui.actionClassify.setEnabled(True)
@@ -236,7 +251,7 @@ class MainWindow(QMainWindow):
         elif (not input_mode):
             input_path = r"/run/media/setsunayyw/0D7D06240D7D0624/SJTU/2021-09/研究/GMM-Demux-GUI/example_input/outs/filtered_feature_bc_matrix"
 
-        self.logger.info(f"Reading data from {input_path}, mode: {input_mode}.")
+        self.__logger.info(f"Reading data from {input_path}, mode: {input_mode}.")
 
         self.htoWindow = htoWindow.HtoWindow(self)
         self.htoWindow.show()
@@ -249,21 +264,21 @@ class MainWindow(QMainWindow):
         )
         
     def setSsdResult(self):
-        self.purified_df = classifier.purify_droplets(self.GMM_full_df, self.confidence_threshold)
-        self.SSD_idx = classifier.obtain_SSD_list(self.purified_df, self.sample_num, self.extract_id_ary)
+        self.__purified_df = classifier.purify_droplets(self.__GMM_full_df, self.__confidence_threshold)
+        self.__SSD_idx = classifier.obtain_SSD_list(self.__purified_df, self.__sample_num, self.__extract_id_ary)
 
     def setPdfPlotHto(self):
-        self.hto_name = str(self.plotOptionWindow.ui.hto_to_plot.currentText())
+        self.__hto_name = str(self.plotOptionWindow.ui.hto_to_plot.currentText())
 
     def saveResult(self, save_mode = "full"):
         def ssdSaveHelper(output_path):
-            io.store_cellranger(self.full_df, self.SSD_idx, output_path)
+            io.store_cellranger(self.__full_df, self.__SSD_idx, output_path)
 
         def saveCallback(err, dlg, content):
             if (err):
                 self.errLogger(err, dlg)
                 return
-            self.logger.info(content)
+            self.__logger.info(content)
             dlg.setText(content),
             dlg.setStandardButtons(QMessageBox.Ok)
 
@@ -272,6 +287,9 @@ class MainWindow(QMainWindow):
             return
         dlg = self.openDialog(text = "Saving...")
         if (save_mode == "ssd"):
+            if (self.__full_df.empty or not self.__SSD_idx):
+                self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
+                return
             self.syncFun(
                 func = ssdSaveHelper,
                 args = [
@@ -280,48 +298,76 @@ class MainWindow(QMainWindow):
                 callback = lambda e: saveCallback(e, dlg, f"MSM-free results stored to {output_path}.")
             )
         elif (save_mode == "full"):
+            if (self.__GMM_full_df.empty or not self.__class_name_ary or not self.__confidence_threshold):
+                self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
+                return
             self.syncFun(
                 func = classifier.store_full_classify_result,
                 args = [
-                    self.GMM_full_df,
-                    self.class_name_ary,
-                    self.confidence_threshold,
+                    self.__GMM_full_df,
+                    self.__class_name_ary,
+                    self.__confidence_threshold,
                     output_path
                 ],
                 callback = lambda e: saveCallback(e, dlg, f"Full report stored to {output_path}.")
             )
         elif (save_mode == "simple"):
+            if (self.__GMM_full_df.empty or not self.__class_name_ary or not self.__confidence_threshold or not self.__sample_num):
+                self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
+                return
             self.syncFun(
                 func = classifier.store_simplified_classify_result,
                 args = [
-                    self.GMM_full_df,
-                    self.class_name_ary,
+                    self.__GMM_full_df,
+                    self.__class_name_ary,
                     output_path,
-                    self.sample_num,
-                    self.confidence_threshold
+                    self.__sample_num,
+                    self.__confidence_threshold
                 ],
                 callback = lambda e: saveCallback(e, dlg, f"Simplified report stored to {output_path}.")
             )
         elif (save_mode == "summary"):
+            if (not self.__estimate_result):
+                self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run estimator first.")
+                return
             summary_report_path = os.path.join(output_path, 'GMM_summary_report.txt')
             self.syncFun(
                 func = estimator.store_summary_result,
                 args = [
                     summary_report_path,
-                    self.estimate_result[0],
-                    self.estimate_result[1]
+                    self.__estimate_result[0],
+                    self.__estimate_result[1]
                 ],
                 callback = lambda e: saveCallback(e, dlg, f"Summary report stored to {summary_report_path}.")
             )
 
+    def resultMenu(self, point):
+        menu = QMenu(self)
+        save_ssd_action = QAction("Save MSM-free results", self)
+        save_full_action = QAction("Save full report", self)
+        save_simple_action = QAction("Save simplified report", self)
+        save_summary_action = QAction("Save summary report", self)
+        save_ssd_action.triggered.connect(lambda: self.saveResult("ssd"))
+        save_full_action.triggered.connect(lambda: self.saveResult("full"))
+        save_simple_action.triggered.connect(lambda: self.saveResult("simple"))
+        save_summary_action.triggered.connect(lambda: self.saveResult("summary"))
+        if (self.ui.result_tab.currentIndex() == 1):
+            menu.addAction(save_ssd_action)
+            menu.addAction(save_full_action)
+            menu.addAction(save_simple_action)
+            menu.exec_(self.ui.result_tab.mapToGlobal(point))
+        elif (self.ui.result_tab.currentIndex() == 2):
+            menu.addAction(save_summary_action)
+            menu.exec_(self.ui.result_tab.mapToGlobal(point))
+
     def plot(self, plot_type):
         def plotHelper():
-            self.plot_file_name = "tsne.png"
-            plot.tsne_plot(self.GMM_df, self.GMM_full_df)
+            self.__plot_file_name = "tsne.png"
+            plot.tsne_plot(self.__GMM_df, self.__GMM_full_df)
 
         def pdfPlotHelper():
-            self.plot_file_name = f"pdf_{self.hto_name}.png"
-            pixmap = QPixmap(os.path.join(self.tmp_path, self.plot_file_name))
+            self.__plot_file_name = f"pdf_{self.__hto_name}.png"
+            pixmap = QPixmap(os.path.join(self.__tmp_path, self.__plot_file_name))
             pixmap = pixmap.scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.ui.label_plot.setPixmap(pixmap)
 
@@ -344,14 +390,14 @@ class MainWindow(QMainWindow):
                 self.errLogger(err, dlg)
                 return
             self.ui.label_plot.setPixmap(
-                QPixmap(os.path.join(self.tmp_path, "tsne.png")).scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
+                QPixmap(os.path.join(self.__tmp_path, "tsne.png")).scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             )
             dlg.setText("Done.")
             dlg.setStandardButtons(QMessageBox.Ok)
 
-        self.logger.info(f"Plot function called, type: {plot_type}.")
+        self.__logger.info(f"Plot function called, type: {plot_type}.")
         if (plot_type == "pdf"):
-            self.plotOptionWindow = pdfPlotWindow.pdfPlotWindow(self, hto_array = self.hto_array)
+            self.plotOptionWindow = pdfPlotWindow.pdfPlotWindow(self, hto_array = self.__hto_ary)
             self.plotOptionWindow.show()
             self.plotOptionWindow.ui.OK.clicked.connect(
                 lambda: (
@@ -377,29 +423,25 @@ class MainWindow(QMainWindow):
         menu.addAction(save_plot_action)
         menu.exec_(self.ui.label_plot.mapToGlobal(point))
 
-    def inputPlot(self):
-        csv_path = QFileDialog.getOpenFileName(self, "Open a csv file", "", "*.csv")
-        if (csv_path != ('','')):
-            self.ui.plot_path.setPlainText(csv_path[0])
-
     def resizeEvent(self, event):
         self.plotResize()
         # print(self.ui.label_plot.size())
         return super(QMainWindow, self).resizeEvent(event)
 
     def closeEvent(self, event):
-        if (os.path.exists(self.tmp_path + "plot.png")):
-            os.remove(self.tmp_path + "plot.png")
-        event.accept() # let the window close
+        # if (os.path.exists(self.__tmp_path + "plot.png")):
+        #     os.remove(self.__tmp_path + "plot.png")
+        self.__logger.info("GMM-demux exited successfully.")
+        event.accept()
 
     def plotResize(self):
-        if (self.plot_file_name):
-            pixmap = QPixmap(os.path.join(self.tmp_path, self.plot_file_name))
+        if (self.__plot_file_name):
+            pixmap = QPixmap(os.path.join(self.__tmp_path, self.__plot_file_name))
             pixmap = pixmap.scaled(self.ui.label_plot.size(), Qt.KeepAspectRatio, Qt.SmoothTransformation)
             self.ui.label_plot.setPixmap(pixmap)
 
     def savePlot(self):
-        if (not self.plot_file_name):
+        if (not self.__plot_file_name):
             dlg = self.openDialog(
                 title = "Warning", 
                 text = "Please plot your data first.",
@@ -408,7 +450,7 @@ class MainWindow(QMainWindow):
             return
         path = QFileDialog.getSaveFileName(self, "Save file", "", "*.png")
         if (path != ('','')):
-            tmp_plot_path = os.path.join(self.tmp_path, self.plot_file_name)
+            tmp_plot_path = os.path.join(self.__tmp_path, self.__plot_file_name)
             save_to_path = path[0]
             shutil.copyfile(tmp_plot_path, save_to_path)
             dlg = self.openDialog(
@@ -418,14 +460,14 @@ class MainWindow(QMainWindow):
             )
 
     def openPlot(self):
-        if (not self.plot_file_name):
+        if (not self.__plot_file_name):
             dlg = self.openDialog(
                 title = "Warning", 
                 text = "Please plot your data first.",
                 buttonStyle = QMessageBox.Ok
             )
             return
-        path = os.path.join(self.tmp_path, self.plot_file_name)
+        path = os.path.join(self.__tmp_path, self.__plot_file_name)
         if (not os.path.isfile(path)):
             dlg = self.openDialog(
                 title = "Error", 
@@ -437,52 +479,52 @@ class MainWindow(QMainWindow):
 
     def setThreshold(self):
         threshold = self.classifierWindow.ui.threshold.toPlainText()
-        self.confidence_threshold = float(threshold)
+        self.__confidence_threshold = float(threshold)
         self.ui.threshold.setPlainText(threshold)
 
     def setSummary(self):
         total_num = self.estimatorWindow.ui.estimated_total_cell_num.toPlainText()
-        self.examine_cell_path = self.estimatorWindow.ui.examine_cell_path.toPlainText()
-        self.ambiguous_rate = self.estimatorWindow.ui.ambiguous_rate.toPlainText()
-        self.ambiguous_rate = float(self.ambiguous_rate)
+        self.__examine_cell_path = self.estimatorWindow.ui.examine_cell_path.toPlainText()
+        self.__ambiguous_rate = self.estimatorWindow.ui.ambiguous_rate.toPlainText()
+        self.__ambiguous_rate = float(self.__ambiguous_rate)
         try:
-            self.estimated_total_cell_num = int(total_num)
+            self.__estimated_total_cell_num = int(total_num)
         except:
-            self.estimated_total_cell_num = None
+            self.__estimated_total_cell_num = None
             return
 
         self.ui.total_num.setPlainText(total_num)
 
     def setExtract(self):
-        self.extract_id_ary = []
+        self.__extract_id_ary = []
         extract_id_ary = []
         tag_name_ary = []
         for index in range(self.classifierWindow.ui.hto_tags.count()):
             item = self.classifierWindow.ui.hto_tags.item(index)
             extract_id_ary.append(item.text())
         if (not extract_id_ary):
-            self.extract_id_ary = None
+            self.__extract_id_ary = None
             return
         for tag_name in extract_id_ary:
             tag_name_ary.append(tag_name.split('+'))
         for tag_ary in tag_name_ary:
-            mask = compute.init_mask(self.sample_num)
+            mask = compute.init_mask(self.__sample_num)
             for tag in tag_ary:
-                hto_idx = self.hto_array.index(tag)
+                hto_idx = self.__hto_ary.index(tag)
                 bv = compute.set_bit(mask, hto_idx)
 
-            for idx in range(0, len(self.base_bv_array)):
-                if self.base_bv_array[idx] == mask:
+            for idx in range(0, len(self.__base_bv_ary)):
+                if self.__base_bv_ary[idx] == mask:
                     extract_id = idx
 
-            self.extract_id_ary.append(extract_id)
-            self.extract_id_ary = list(set(self.extract_id_ary))
+            self.__extract_id_ary.append(extract_id)
+            self.__extract_id_ary = list(set(self.__extract_id_ary))
 
     def runClassifier(self):
         def runClassifierHelper():
-            self.logger.info(f"Classifier called.")
-            high_array, low_array = classifier.obtain_arrays(self.GMM_df, self.tmp_path)
-            self.GMM_full_df, self.class_name_ary = classifier.classify_drops(self.base_bv_array, high_array, low_array, self.GMM_df)
+            self.__logger.info(f"Classifier called.")
+            high_array, low_array = classifier.obtain_arrays(self.__GMM_df, self.__tmp_path)
+            self.__GMM_full_df, self.__class_name_ary = classifier.classify_drops(self.__base_bv_ary, high_array, low_array, self.__GMM_df)
             self.setSsdResult()
         def runClassifierWorker():
             dlg = self.openDialog(text = "Running classifier...")
@@ -495,10 +537,10 @@ class MainWindow(QMainWindow):
             if (err):
                 self.errLogger(err, dlg)
                 return
-            self.ui.tabWidget_console.setCurrentIndex(1)
-            # self.ui.classificationTable.setModel(pandasModel(self.GMM_full_df))
+            self.ui.result_tab.setCurrentIndex(1)
+            # self.ui.classificationTable.setModel(pandasModel(self.__GMM_full_df))
             # self.ui.classificationTable.resizeColumnsToContents()
-            self.ui.classificationTable.setTableWidget(self.GMM_full_df)
+            self.ui.classificationTable.setTableWidget(self.__GMM_full_df)
             dlg.setText("Done.")
             dlg.setStandardButtons(QMessageBox.Ok)
             self.ui.actionSave_MSM_free_results_to.setEnabled(True)
@@ -506,12 +548,13 @@ class MainWindow(QMainWindow):
             self.ui.actionSave_simplified_results_to.setEnabled(True)
             self.ui.actionPDF.setEnabled(True)
             self.ui.actiontSNE.setEnabled(True)
-            self.ui.actionEstimate.setEnabled(True if (not self.extract_id_ary) else False)
-            self.ui.estimate.setEnabled(True if (not self.extract_id_ary) else False)
+            self.ui.plot.setEnabled(True)
+            self.ui.actionEstimate.setEnabled(True if (not self.__extract_id_ary) else False)
+            self.ui.estimate.setEnabled(True if (not self.__extract_id_ary) else False)
 
         self.classifierWindow = classifierWindow.ClassifierWindow(self)
         self.classifierWindow.show()
-        self.classifierWindow.setList(self.hto_array)
+        self.classifierWindow.setList(self.__hto_ary)
         self.classifierWindow.ui.add.clicked.connect(self.classifierWindow.addHto)
         self.classifierWindow.ui.remove.clicked.connect(self.classifierWindow.removeHto)
         self.classifierWindow.ui.OK.clicked.connect(
@@ -526,19 +569,19 @@ class MainWindow(QMainWindow):
     def runEstimator(self):
         def runEstimatorHelper():
             estimate_result = estimator.estimator(
-                self.GMM_full_df,
-                self.purified_df,
-                self.sample_num,
-                self.base_bv_array,
-                self.confidence_threshold,
-                self.estimated_total_cell_num,
-                self.SSD_idx,
-                self.sample_names,
-                self.examine_cell_path,
-                self.ambiguous_rate,
-                self.class_name_ary
+                self.__GMM_full_df,
+                self.__purified_df,
+                self.__sample_num,
+                self.__base_bv_ary,
+                self.__confidence_threshold,
+                self.__estimated_total_cell_num,
+                self.__SSD_idx,
+                self.__sample_names,
+                self.__examine_cell_path,
+                self.__ambiguous_rate,
+                self.__class_name_ary
             )
-            self.estimate_result = estimate_result
+            self.__estimate_result = estimate_result
 
         def setEstimationResult(full_report_dict):
             for (key, value) in full_report_dict.items():
@@ -551,18 +594,18 @@ class MainWindow(QMainWindow):
             if (err):
                 self.errLogger(err, dlg)
                 return
-            if (isinstance(self.estimate_result, int)):
+            if (isinstance(self.__estimate_result, int)):
                 self.warnLogger("SSM-rate estimation terminated.", dlg, content = "GMM cannot find a viable solution that satisfies the droplet formation model. SSM rate estimation terminated.")
                 return
-            self.ui.tabWidget_console.setCurrentIndex(2)
-            setEstimationResult(self.estimate_result[2])
-            self.ui.perSampleTable.setTableWidget(self.estimate_result[1])
-            # self.ui.perSampleTable.setModel(pandasModel(self.estimate_result[1]))
+            self.ui.result_tab.setCurrentIndex(2)
+            setEstimationResult(self.__estimate_result[2])
+            self.ui.perSampleTable.setTableWidget(self.__estimate_result[1])
+            # self.ui.perSampleTable.setModel(pandasModel(self.__estimate_result[1]))
             self.ui.perSampleTable.resizeColumnsToContents()
             self.ui.perSampleTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.ui.perSampleTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-            GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type = self.estimate_result[3]
-            self.ui.ambiguous_rate.setPlainText(str(self.ambiguous_rate))
+            GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type = self.__estimate_result[3]
+            self.ui.ambiguous_rate.setPlainText(str(self.__ambiguous_rate))
             self.ui.GEM_num_ex.setPlainText(str(GEM_num))
             self.ui.MSM_num_ex.setPlainText(str(MSM_num))
             self.ui.phony_p_value.setPlainText(f"{phony_test_pvalue:.2e}")

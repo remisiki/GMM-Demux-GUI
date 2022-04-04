@@ -281,7 +281,7 @@ def obtain_SSD_list(data, sample_num, class_id_ary = None):
         for class_id in class_id_ary:
             SSD_idx.extend(data.index[data["Cluster_id"] == class_id])
     else:
-        SSD_idx = data.index[data["Cluster_id"] <= sample_num]
+        SSD_idx = list(data.index[data["Cluster_id"] <= sample_num])
 
     return SSD_idx
 
