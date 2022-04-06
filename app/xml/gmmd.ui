@@ -23,7 +23,7 @@
    </size>
   </property>
   <property name="windowTitle">
-   <string>GMM-demux</string>
+   <string>GMM Demux</string>
   </property>
   <widget class="QWidget" name="centralwidget">
    <layout class="QGridLayout" name="gridLayout">
@@ -738,7 +738,7 @@
          <property name="sizeHint" stdset="0">
           <size>
            <width>20</width>
-           <height>137</height>
+           <height>20</height>
           </size>
          </property>
         </spacer>
@@ -1247,7 +1247,6 @@
     <addaction name="actionAdd_file_from_directory"/>
     <addaction name="actionAdd_file_from_csv"/>
     <addaction name="actionAdd_full_report"/>
-    <addaction name="actionQuick_Read"/>
     <addaction name="separator"/>
     <addaction name="actionSave_MSM_free_results_to"/>
     <addaction name="actionSave_full_results_to"/>

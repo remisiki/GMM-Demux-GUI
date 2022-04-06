@@ -25,7 +25,10 @@ from PyQt5.QtCore import (
     pyqtSignal, 
     QObject
 )
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtGui import (
+    QPixmap,
+    QIcon
+)
 from app.controller import (
     htoWindow, 
     classifierWindow, 
@@ -88,7 +91,6 @@ class MainWindow(QMainWindow):
         self.ui.actionAdd_file_from_directory.triggered.connect(lambda: self.readData(input_mode = "mtx"))
         self.ui.actionAdd_file_from_csv.triggered.connect(lambda: self.readData(input_mode = "csv"))
         self.ui.actionAdd_full_report.triggered.connect(lambda: self.readData(input_mode = "full"))
-        self.ui.actionQuick_Read.triggered.connect(self.readData)
         self.ui.actionClassify.triggered.connect(self.runClassifier)
         self.ui.actionPDF.triggered.connect(lambda: self.plot(plot_type = "pdf"))
         self.ui.actiontSNE.triggered.connect(lambda: self.plot(plot_type = "tsne"))
@@ -97,7 +99,7 @@ class MainWindow(QMainWindow):
         self.ui.actionSave_simplified_results_to.triggered.connect(lambda: self.saveResult("simple"))
         self.ui.actionSave_summary_report.triggered.connect(lambda: self.saveResult("summary"))
         self.ui.actionEstimate.triggered.connect(self.runEstimator)
-        self.ui.read.clicked.connect(self.readData)
+        self.ui.read.clicked.connect(lambda: self.readData("mtx"))
         self.ui.classify.clicked.connect(self.runClassifier)
         self.ui.estimate.clicked.connect(self.runEstimator)
         self.ui.plot.clicked.connect(lambda: self.plot(plot_type = "tsne"))
@@ -117,6 +119,7 @@ class MainWindow(QMainWindow):
         self.ui.result_tab.customContextMenuRequested.connect(self.resultMenu)
         self.__plot_file_name = None
         self.setFocus()
+        self.setWindowIcon(QIcon('icon.ico'))
         self.__logger.info("Intializing mainWindow finished.")
         self.show()
 
@@ -181,7 +184,7 @@ class MainWindow(QMainWindow):
 
     def readData(self, input_mode = None):
         def readDataHelper(input_mode, input_path, hto_array = None):
-            if (input_mode == "mtx" or (not input_mode)):
+            if (input_mode == "mtx"):
                 self.__full_df, self.__GMM_df = io.read_cellranger(input_path, hto_array)
             elif (input_mode == "csv"):
                 self.__full_df, self.__GMM_df = io.read_csv(input_path[0], hto_array)
@@ -247,8 +250,6 @@ class MainWindow(QMainWindow):
             input_path = QFileDialog.getExistingDirectory(self, "Open a directory")
             if (input_path == ('')):
                 return
-        elif (not input_mode):
-            input_path = r"/run/media/setsunayyw/0D7D06240D7D0624/SJTU/2021-09/研究/GMM-Demux-GUI/example_input/outs/filtered_feature_bc_matrix"
 
         self.__logger.info(f"Reading data from {input_path}, mode: {input_mode}.")
 
@@ -604,13 +605,14 @@ class MainWindow(QMainWindow):
             self.ui.perSampleTable.resizeColumnsToContents()
             self.ui.perSampleTable.horizontalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
             self.ui.perSampleTable.verticalHeader().setSectionResizeMode(QtWidgets.QHeaderView.Stretch)
-            GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type = self.__estimate_result[3]
-            self.ui.ambiguous_rate.setPlainText(str(self.__ambiguous_rate))
-            self.ui.GEM_num_ex.setPlainText(str(GEM_num))
-            self.ui.MSM_num_ex.setPlainText(str(MSM_num))
-            self.ui.phony_p_value.setPlainText(f"{phony_test_pvalue:.2e}")
-            self.ui.pure_p_value.setPlainText(f"{pure_test_pvalue:.2e}")
-            self.ui.cluster_type.setPlainText(cluster_type)
+            if (self.__estimate_result[3]):
+                GEM_num, MSM_num, phony_test_pvalue, pure_test_pvalue, cluster_type = self.__estimate_result[3]
+                self.ui.ambiguous_rate.setPlainText(str(self.__ambiguous_rate))
+                self.ui.GEM_num_ex.setPlainText(str(GEM_num))
+                self.ui.MSM_num_ex.setPlainText(str(MSM_num))
+                self.ui.phony_p_value.setPlainText(f"{phony_test_pvalue:.2e}")
+                self.ui.pure_p_value.setPlainText(f"{pure_test_pvalue:.2e}")
+                self.ui.cluster_type.setPlainText(cluster_type)
             dlg.setText(
                 "Done."
             )

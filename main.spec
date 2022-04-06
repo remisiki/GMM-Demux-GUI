@@ -7,7 +7,7 @@ block_cipher = None
 a = Analysis(['main.py'],
              pathex=[],
              binaries=[],
-             datas=[('log_config.json', '.')],
+             datas=[('log_config.json', '.'), ('icon.ico', '.')],
              hiddenimports=['sklearn.utils._typedefs', 'sklearn.neighbors._partition_nodes'],
              hookspath=[],
              hooksconfig={},
@@ -20,11 +20,26 @@ a = Analysis(['main.py'],
 pyz = PYZ(a.pure, a.zipped_data,
              cipher=block_cipher)
 
+Key = ['mkl']
+def remove_from_list(input, keys):
+    outlist = []
+    for item in input:
+        name, _, _ = item
+        flag = 0
+        for key_word in keys:
+            if name.find(key_word) > -1:
+                flag = 1
+        if flag != 1:
+            outlist.append(item)
+    return outlist
+a.binaries = remove_from_list(a.binaries, Key)
+
 exe = EXE(pyz,
           a.scripts, 
           [],
           exclude_binaries=True,
           name='GMM Demux',
+          icon='icon.ico',
           debug=False,
           bootloader_ignore_signals=False,
           strip=False,
@@ -33,7 +48,8 @@ exe = EXE(pyz,
           disable_windowed_traceback=False,
           target_arch=None,
           codesign_identity=None,
-          entitlements_file=None )
+          entitlements_file=None,
+          version='product_info.rc' )
 coll = COLLECT(exe,
                a.binaries,
                a.zipfiles,
@@ -41,4 +57,7 @@ coll = COLLECT(exe,
                strip=False,
                upx=True,
                upx_exclude=[],
-               name='main')
+               name='GMM Demux')
+app = BUNDLE(exe,
+             name='GMM Demux',
+             icon='icon.ico')

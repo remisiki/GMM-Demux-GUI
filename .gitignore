@@ -1,6 +1,7 @@
 SSD_mtx/
 # .gitignore
 .venv/
+.avenv/
 docs/build/
 docs/make.bat
 docs/Makefile
@@ -13,4 +14,8 @@ env
 *.log
 build/
 dist*
-gmmd.zip
+*.zip
+*.iss
+uninstall.txt
+post_install.txt
+Output/

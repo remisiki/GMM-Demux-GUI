@@ -35,7 +35,7 @@
     <enum>QPlainTextEdit::NoWrap</enum>
    </property>
    <property name="plainText">
-    <string>35685</string>
+    <string/>
    </property>
    <property name="placeholderText">
     <string/>
@@ -58,6 +58,9 @@
    </property>
   </widget>
   <widget class="QPushButton" name="OK">
+   <property name="enabled">
+    <bool>false</bool>
+   </property>
    <property name="geometry">
     <rect>
      <x>220</x>
@@ -95,7 +98,7 @@
     <enum>QPlainTextEdit::NoWrap</enum>
    </property>
    <property name="plainText">
-    <string>/run/media/setsunayyw/0D7D06240D7D0624/SJTU/2021-09/研究/GMM-Demux-GUI/example_cell_types/CD19+.txt</string>
+    <string/>
    </property>
    <property name="placeholderText">
     <string/>
