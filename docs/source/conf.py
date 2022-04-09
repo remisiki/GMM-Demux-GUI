@@ -19,11 +19,11 @@ sys.path.append(os.path.abspath('../../'))
 # -- Project information -----------------------------------------------------
 
 project = 'GMM-Demux'
-copyright = '2021, Hongyi Xin'
+copyright = '2019 - 2022 CHPGenetics'
 author = 'Hongyi Xin'
 
 # The full version, including alpha/beta/rc tags
-release = '0.1'
+release = '1.0'
 
 
 # -- General configuration ---------------------------------------------------
@@ -35,7 +35,8 @@ extensions = [
 	'myst_parser',
 	'sphinx.ext.intersphinx',
 	'sphinx.ext.autosummary',
-	'sphinx_rtd_dark_mode'
+	'sphinx_rtd_dark_mode',
+	'sphinx.ext.autosectionlabel'
 ]
 
 # intersphinx_mapping = {

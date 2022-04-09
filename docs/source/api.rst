@@ -44,7 +44,6 @@ Computing Tools
 	:toctree: generated/
 
 	obtain_base_bv_array
-	get_empty_bv
 	check_set_bit
 	init_mask
 	set_bit

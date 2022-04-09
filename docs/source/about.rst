@@ -11,15 +11,20 @@ Maintainer
 
 Hongyi Xin
 
-Acknowledgement
----------------
-
-Special thank to Zhongli Xu for testing GMM-Demux!
-
 Documentation
 -------------
 
 Yiwen Yang
+
+GUI Designer
+------------
+
+Yiwen Yang
+
+Acknowledgement
+---------------
+
+Special thank to Zhongli Xu for testing GMM-Demux!
 
 Citation
 --------
