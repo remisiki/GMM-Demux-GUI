@@ -64,20 +64,3 @@ def pdfPlot(x, pdf, hto_name, path = None):
 	plt.draw()
 	plt.legend(fontsize = 9, loc = 'upper right')
 	plt.savefig(os.path.join(path, f"pdf_{hto_name}.png"))
-
-def openImage(path):
-	if (not path):
-		logger.error(f"Empty path {path}.")
-		return
-	try:
-		imageViewerFromCommandLine = {'linux':'xdg-open',
-									'win32':'explorer',
-									'darwin':'open'}[sys.platform]
-	except:
-		logger.error(f"Platform {sys.platform} not supported.")
-		return
-	try:
-	    subprocess.run([imageViewerFromCommandLine, path])
-	except Exception as e:
-		logger.error(e)
-		return

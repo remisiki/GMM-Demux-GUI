@@ -1283,9 +1283,26 @@
     <addaction name="actionEstimate"/>
     <addaction name="menuPlot"/>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>&amp;Help</string>
+    </property>
+    <addaction name="actionDocumentation"/>
+    <addaction name="actionGithub"/>
+    <addaction name="actionVersion"/>
+   </widget>
+   <widget class="QMenu" name="menuTools">
+    <property name="title">
+     <string>&amp;Tools</string>
+    </property>
+    <addaction name="actionView_logs"/>
+    <addaction name="actionOpen_log_file_location"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuRun"/>
+   <addaction name="menuTools"/>
    <addaction name="menuSettings"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <action name="actionAdd_file_from_directory">
@@ -1417,6 +1434,31 @@
    </property>
    <property name="text">
     <string>Save summary report...</string>
+   </property>
+  </action>
+  <action name="actionDocumentation">
+   <property name="text">
+    <string>Documentation</string>
+   </property>
+  </action>
+  <action name="actionGithub">
+   <property name="text">
+    <string>Github</string>
+   </property>
+  </action>
+  <action name="actionVersion">
+   <property name="text">
+    <string>Version</string>
+   </property>
+  </action>
+  <action name="actionView_logs">
+   <property name="text">
+    <string>View logs</string>
+   </property>
+  </action>
+  <action name="actionOpen_log_file_location">
+   <property name="text">
+    <string>Open log file location</string>
    </property>
   </action>
  </widget>

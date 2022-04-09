@@ -18,7 +18,7 @@
             "class": "logging.FileHandler",
             "level": "INFO",
             "formatter": "simple",
-            "filename": "gmmd.log"
+            "filename": "log/gmmd.log"
         }
     },
 

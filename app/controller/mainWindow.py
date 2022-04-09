@@ -19,11 +19,8 @@ from PyQt5.QtWidgets import (
 )
 from PyQt5.QtCore import (
     Qt, 
-    QThread, 
     QFile, 
-    QTextStream, 
-    pyqtSignal, 
-    QObject
+    QTextStream
 )
 from PyQt5.QtGui import (
     QPixmap,
@@ -36,32 +33,17 @@ from app.controller import (
     pdfPlotWindow
 )
 from app.controller.utils.pandasTable import *
+from app.controller.utils.thread import syncFun
+from app.controller.utils import file
 import tempfile
 import shutil
 from logging import getLogger
-import traceback
-
-class Worker(QObject):
-    finished = pyqtSignal(object)
-
-    def __init__(self, f, args = None, parent = None):
-        QThread.__init__(self, parent)
-        self.f = f
-        self.args = args
-
-    def func(self):
-        try:
-            if (self.args):
-                result = self.f(*self.args)
-            else:
-                result = self.f()
-            self.finished.emit(None)
-        except Exception:
-            self.finished.emit(traceback.format_exc())
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         self.__tmp_path = os.path.join(tempfile.gettempdir(), ".gmm-demux")
+        self.__log_dir_path = 'log'
+        self.__log_file_path = os.path.join(self.__log_dir_path, 'gmmd.log')
         self.__logger = getLogger(__name__)
         self.__full_df = pd.DataFrame()
         self.__GMM_df = pd.DataFrame()
@@ -82,6 +64,8 @@ class MainWindow(QMainWindow):
         self.__ambiguous_rate = None
         self.__estimated_total_cell_num = None
         self.__extract_id_ary = None
+        self.__url_documentation = "https://gmm-demux.readthedocs.io/"
+        self.__url_github = "https://github.com/remisiki/GMM-Demux-GUI"
         if (not os.path.exists(self.__tmp_path)):
             os.makedirs(self.__tmp_path)
             self.__logger.info(f"Temp path not found, {self.__tmp_path} created.")
@@ -99,6 +83,11 @@ class MainWindow(QMainWindow):
         self.ui.actionSave_simplified_results_to.triggered.connect(lambda: self.saveResult("simple"))
         self.ui.actionSave_summary_report.triggered.connect(lambda: self.saveResult("summary"))
         self.ui.actionEstimate.triggered.connect(self.runEstimator)
+        self.ui.actionDocumentation.triggered.connect(lambda: file.openFileInSystem(self.__url_documentation))
+        self.ui.actionGithub.triggered.connect(lambda: file.openFileInSystem(self.__url_github))
+        self.ui.actionVersion.triggered.connect(self.showVersion)
+        self.ui.actionView_logs.triggered.connect(lambda: file.openFileInSystem(self.__log_file_path))
+        self.ui.actionOpen_log_file_location.triggered.connect(lambda: file.openFileInSystem(self.__log_dir_path))
         self.ui.read.clicked.connect(lambda: self.readData("mtx"))
         self.ui.classify.clicked.connect(self.runClassifier)
         self.ui.estimate.clicked.connect(self.runEstimator)
@@ -122,18 +111,6 @@ class MainWindow(QMainWindow):
         self.setWindowIcon(QIcon('icon.ico'))
         self.__logger.info("Intializing mainWindow finished.")
         self.show()
-
-    def syncFun(self, func, args = None, callback = None):
-        self.thread = QThread(self)
-        self.worker = Worker(f = func, args = args)
-        self.worker.moveToThread(self.thread)
-        self.thread.started.connect(self.worker.func)
-        self.worker.finished.connect(lambda e: self.thread.quit())
-        self.worker.finished.connect(lambda e: self.worker.deleteLater())
-        self.thread.finished.connect(self.thread.deleteLater)
-        self.thread.start()
-        if (callback):
-            self.worker.finished.connect(lambda e: callback(e))
 
     def errLogger(self, err, dlg = None, title = None, content = None):
         self.__logger.error(err)
@@ -203,7 +180,7 @@ class MainWindow(QMainWindow):
 
         def readDataWorker(input_mode, input_path):
             dlg = self.openDialog(text = "Reading data...")
-            self.syncFun(
+            syncFun(
                 func = readDataHelper, 
                 args = [
                     input_mode,
@@ -290,7 +267,7 @@ class MainWindow(QMainWindow):
             if (self.__full_df.empty or not self.__SSD_idx):
                 self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
                 return
-            self.syncFun(
+            syncFun(
                 func = ssdSaveHelper,
                 args = [
                     output_path
@@ -301,7 +278,7 @@ class MainWindow(QMainWindow):
             if (self.__GMM_full_df.empty or not self.__class_name_ary or not self.__confidence_threshold):
                 self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
                 return
-            self.syncFun(
+            syncFun(
                 func = classifier.store_full_classify_result,
                 args = [
                     self.__GMM_full_df,
@@ -315,7 +292,7 @@ class MainWindow(QMainWindow):
             if (self.__GMM_full_df.empty or not self.__class_name_ary or not self.__confidence_threshold or not self.__sample_num):
                 self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run classifier first.")
                 return
-            self.syncFun(
+            syncFun(
                 func = classifier.store_simplified_classify_result,
                 args = [
                     self.__GMM_full_df,
@@ -331,7 +308,7 @@ class MainWindow(QMainWindow):
                 self.warnLogger(f"Client called {save_mode} save without data.", dlg, content = "Please run estimator first.")
                 return
             summary_report_path = os.path.join(output_path, 'GMM_summary_report.txt')
-            self.syncFun(
+            syncFun(
                 func = estimator.store_summary_result,
                 args = [
                     summary_report_path,
@@ -374,7 +351,7 @@ class MainWindow(QMainWindow):
 
         def pdfPlotWorker():
             dlg = self.openDialog(text = "Plotting PDF, it may take a few seconds...")
-            self.syncFun(
+            syncFun(
                 func = pdfPlotHelper,
                 callback = lambda e: pdfPlotCallback(e, dlg)
             )
@@ -409,7 +386,7 @@ class MainWindow(QMainWindow):
             )
         elif (plot_type == "tsne"):
             dlg = self.openDialog(text = "Plotting tSNE, it may take a few minutes...")
-            self.syncFun(
+            syncFun(
                 func = plotHelper,
                 callback = lambda e: tsnePlotCallback(e, dlg)
             )
@@ -476,7 +453,7 @@ class MainWindow(QMainWindow):
                 buttonStyle = QMessageBox.Ok
             )
             return
-        plot.openImage(path)
+        file.openFileInSystem(path)
 
     def setThreshold(self):
         threshold = self.classifierWindow.ui.threshold.toPlainText()
@@ -529,7 +506,7 @@ class MainWindow(QMainWindow):
             self.setSsdResult()
         def runClassifierWorker():
             dlg = self.openDialog(text = "Running classifier...")
-            self.syncFun(
+            syncFun(
                 func = runClassifierHelper, 
                 callback = lambda e: classifierCallback(e, dlg)
             )
@@ -620,7 +597,7 @@ class MainWindow(QMainWindow):
             self.ui.actionSave_summary_report.setEnabled(True)
         def runEstimatorWorker():
             dlg = self.openDialog(text = "Running estimator...")
-            self.syncFun(
+            syncFun(
                 func = runEstimatorHelper,
                 callback = lambda e: estimatorCallback(e, dlg)
             )
@@ -636,7 +613,24 @@ class MainWindow(QMainWindow):
         )
 
     def changeTheme(self, theme_type):
-        file = QFile(f":/{theme_type}/stylesheet.qss")
-        file.open(QFile.ReadOnly | QFile.Text)
-        stream = QTextStream(file)
-        QApplication.instance().setStyleSheet(stream.readAll())
+        try:
+            file = QFile(f":/{theme_type}/stylesheet.qss")
+            file.open(QFile.ReadOnly | QFile.Text)
+            stream = QTextStream(file)
+            QApplication.instance().setStyleSheet(stream.readAll())
+            self.__logger.info(f"Theme changed to {theme_type}")
+        except Exception as e:
+            print(e)
+            dlg = self.openDialog()
+            err_msg = f'Error when switching to {theme_type} theme.'
+            self.errLogger(
+                err_msg,
+                dlg,
+                content = err_msg
+            )
+
+    def showVersion(self):
+        self.openDialog(
+            text = "<p align='center'>GMM Demux 1.0<br>Copyright © 2019 - 2022 CHPGenetics</p>",
+            buttonStyle = QMessageBox.Ok
+        )

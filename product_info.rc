@@ -33,7 +33,7 @@ VSVersionInfo(
         StringStruct('FileDescription', 'GMM Demux'),
         StringStruct('FileVersion', '1.0'),
         StringStruct('InternalName', ''),
-        StringStruct('LegalCopyright', 'Copyright © 2020 - 2022 CHPGenetics'),
+        StringStruct('LegalCopyright', 'Copyright © 2019 - 2022 CHPGenetics'),
         StringStruct('OriginalFilename', ''),
         StringStruct('ProductName', 'GMM Demux'),
         StringStruct('ProductVersion', '1.0'),
