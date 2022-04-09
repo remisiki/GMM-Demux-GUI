@@ -65,6 +65,8 @@ html_theme_options = {
 html_show_sphinx = False
 html_show_sourcelink = False
 pygments_style = "sphinx"
+html_logo = '_static/favicon.ico'
+html_favicon = '_static/favicon.ico'
 
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
