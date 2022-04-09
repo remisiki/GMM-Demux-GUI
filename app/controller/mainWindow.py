@@ -64,7 +64,7 @@ class MainWindow(QMainWindow):
         self.__ambiguous_rate = None
         self.__estimated_total_cell_num = None
         self.__extract_id_ary = None
-        self.__url_documentation = "https://gmm-demux.readthedocs.io/"
+        self.__url_documentation = "https://gmm-demux.readthedocs.io/en/latest/usage.html#graphic-user-interface"
         self.__url_github = "https://github.com/remisiki/GMM-Demux-GUI"
         if (not os.path.exists(self.__tmp_path)):
             os.makedirs(self.__tmp_path)
