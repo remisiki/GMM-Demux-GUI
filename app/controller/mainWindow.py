@@ -631,6 +631,6 @@ class MainWindow(QMainWindow):
 
     def showVersion(self):
         self.openDialog(
-            text = "<p align='center'>GMM Demux 1.0<br>Copyright © 2019 - 2022 CHPGenetics</p>",
+            text = "<p align='center'>GMM Demux 1.0.1<br>Copyright © 2019 - 2022 CHPGenetics</p>",
             buttonStyle = QMessageBox.Ok
         )

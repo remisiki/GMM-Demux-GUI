@@ -20,3 +20,5 @@ uninstall.txt
 post_install.txt
 Output/
 log/
+main.spec
+product_info.rc
