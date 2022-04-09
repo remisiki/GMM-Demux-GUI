@@ -17,7 +17,7 @@ Requirements
 
 .. |text| replace:: *Where can I find my Windows system information?*
 
-For Windows users, we suggest one download latest executable installer from `here <https://github.com/remisiki/GMM-Demux-GUI/releases/download/release/gmmd-install-windows-amd64-v1.0.exe>`_.
+For Windows users, we suggest one download latest executable installer from `here <https://github.com/remisiki/GMM-Demux-GUI/releases/download/v1.0.1/gmmd-install-windows-amd64-v1.0.1.exe>`_.
 
 Please follow the wizard to complete the installation, then the GMM Demux program is expected to be installed on your Windows PC. For further steps, please check `Usage <usage.html>`_.
 
